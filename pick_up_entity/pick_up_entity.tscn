@@ -1,0 +1,21 @@
+[gd_scene load_steps=2 format=3 uid="uid://bkjc0hg32u7r"]
+
+[ext_resource type="PackedScene" uid="uid://cs0um05u88w80" path="res://pick_up_entity/entity.tscn" id="1_al87l"]
+
+[node name="PickUpEntity" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Entity" parent="." instance=ExtResource("1_al87l")]
+
+[node name="Entity2" parent="." instance=ExtResource("1_al87l")]
+position = Vector2(337, -177)
+
+[node name="Entity3" parent="." instance=ExtResource("1_al87l")]
+position = Vector2(-372, -188)
+
+[node name="Entity4" parent="." instance=ExtResource("1_al87l")]
+position = Vector2(-385, 215)
+
+[node name="Entity5" parent="." instance=ExtResource("1_al87l")]
+position = Vector2(340, 220)

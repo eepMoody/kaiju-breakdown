@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://bp78r6mn4msdb"]
+
+[ext_resource type="Texture2D" uid="uid://hkxi27x2dyvr" path="res://icon.svg" id="1_ixfmp"]
+[ext_resource type="Script" uid="uid://b8brnd6hb0mu2" path="res://split_sprite/split_sprite.gd" id="2_rge1k"]
+
+[node name="SplitSprite" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_ixfmp")
+script = ExtResource("2_rge1k")

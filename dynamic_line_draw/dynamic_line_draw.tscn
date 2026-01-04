@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://dt8tyohaa0qr"]
+
+[ext_resource type="Script" uid="uid://2g3mgex1g5ce" path="res://dynamic_line_draw/dynamic_line_draw.gd" id="1_dokpe"]
+
+[node name="DynamicLineDraw" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(498, 239)
+
+[node name="Node2D" type="Node2D" parent="."]
+script = ExtResource("1_dokpe")

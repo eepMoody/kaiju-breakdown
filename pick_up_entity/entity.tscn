@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://cs0um05u88w80"]
+
+[ext_resource type="Script" uid="uid://dofoardsolni3" path="res://pick_up_entity/pick_up_entity.gd" id="1_nb2o6"]
+[ext_resource type="Texture2D" uid="uid://hkxi27x2dyvr" path="res://icon.svg" id="2_fjk8a"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ftdmw"]
+size = Vector2(125, 125)
+
+[node name="Entity" type="Node2D" node_paths=PackedStringArray("sprite")]
+script = ExtResource("1_nb2o6")
+sprite = NodePath("Sprite2D")
+
+[node name="Drop Shadow" type="Sprite2D" parent="."]
+modulate = Color(0.011764706, 0.011764706, 0.011764706, 0.39215687)
+texture = ExtResource("2_fjk8a")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_fjk8a")
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+shape = SubResource("RectangleShape2D_ftdmw")

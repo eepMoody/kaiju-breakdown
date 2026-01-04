@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://b0sx7h4os3q1p"]
+
+[ext_resource type="Script" uid="uid://bv8vke3hx5g5k" path="res://draw_lines/draw_lines.gd" id="1_8nqu6"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Node2D" type="Node2D" parent="."]
+script = ExtResource("1_8nqu6")
