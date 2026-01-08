@@ -16,7 +16,7 @@ func _input(event):
 		else:
 			if temp_line:
 				print(temp_line.points.size())
-				temp_line.points = Utilities.RamerDouglasPeucker(temp_line.points, 10)
+				temp_line.points = Utilities.ramer_douglas_peucker(temp_line.points, 10)
 				print(temp_line.points.size())
 				temp_line.default_color = Color.YELLOW
 				temp_line = null
