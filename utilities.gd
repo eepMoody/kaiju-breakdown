@@ -38,7 +38,7 @@ static func perpendicular_distance(point: Vector2, lineStart: Vector2, lineEnd: 
 static func line_collides_with_polygon(line_a: Vector2, line_b: Vector2, polygon_points: PackedVector2Array) -> bool:
 	for i in range(polygon_points.size()):
 		var p1 = polygon_points[i]
-		var p2 = polygon_points[(i + 1) % polygon_points.size()] # Wrap around to close the polygon
+		var p2 = polygon_points[(i + 1) % polygon_points.size()]
 		if Geometry2D.segment_intersects_segment(line_a, line_b, p1, p2) != null:
 			return true
 

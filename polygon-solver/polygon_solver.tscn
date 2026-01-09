@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://brg0p7cbfvmbn"]
+
+[ext_resource type="Script" uid="uid://dru5vb3ehejq1" path="res://polygon-solver/polygon_solver.gd" id="1_aphri"]
+
+[node name="PolygonSolver" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Targets" type="Node2D" parent="." node_paths=PackedStringArray("targets")]
+script = ExtResource("1_aphri")
+targets = [NodePath("Polygon2D"), NodePath("Polygon2D2"), NodePath("Polygon2D3")]
+
+[node name="Polygon2D" type="Polygon2D" parent="Targets"]
+polygon = PackedVector2Array(-465, -232, -523, -116, -423, -29, -312, -104, -332, -223)
+
+[node name="Polygon2D2" type="Polygon2D" parent="Targets"]
+polygon = PackedVector2Array(230, -247, 141, 78, 470, -29)
+
+[node name="Polygon2D3" type="Polygon2D" parent="Targets"]
+polygon = PackedVector2Array(-361, 59, -188, 59, -197, 255, -347, 254)
