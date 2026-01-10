@@ -46,3 +46,39 @@ static func line_collides_with_polygon(line_a: Vector2, line_b: Vector2, polygon
 		return true
 
 	return false
+
+static func find_polygon_matches(polygons: Array[Polygon2D], point_a: Vector2, point_b: Vector2) -> Array[Polygon2D]:
+	var matches: Array[Polygon2D]
+
+	for polygon in polygons:
+		if Utilities.line_collides_with_polygon(point_a, point_b, polygon.polygon):
+			matches.push_back(polygon)
+
+	return matches
+
+static func create_polyline(point_a: Vector2, point_b: Vector2, width: int) -> Polygon2D:
+	var polygon = Polygon2D.new()
+
+	var dir = (point_b - point_a).normalized()
+
+	var normal = dir.orthogonal()
+
+	var offset = normal * (width / 2.0)
+
+	polygon.polygon = PackedVector2Array([
+		point_a + offset,
+		point_b + offset,
+		point_b - offset,
+		point_a - offset
+	])
+
+	return polygon
+
+static func slice_polygon(poly_a_node: Polygon2D, poly_b_node: Polygon2D):
+	return Geometry2D.clip_polygons(
+		get_global_polygon_position(poly_a_node),
+		get_global_polygon_position(poly_b_node)
+	)
+
+static func get_global_polygon_position(polygon: Polygon2D) -> PackedVector2Array:
+	return polygon.global_transform * polygon.polygon
