@@ -4,7 +4,7 @@ static func ramer_douglas_peucker(points: PackedVector2Array, tolerance: float) 
 	if points.size() < 3:
 		return points
 
-	var maxDistance: float = 0
+	var max_distance: float = 0
 	var index: int = 0
 	var start: Vector2 = points[0]
 	var end: Vector2 = points[-1]
@@ -12,11 +12,11 @@ static func ramer_douglas_peucker(points: PackedVector2Array, tolerance: float) 
 	for i in range(1, points.size()):
 		var distance = perpendicular_distance(points[i], start, end)
 
-		if distance > maxDistance:
-			maxDistance = distance;
+		if distance > max_distance:
+			max_distance = distance;
 			index = i;
 
-	if maxDistance > tolerance:
+	if max_distance > tolerance:
 		var left = ramer_douglas_peucker(points.slice(0, index + 1), tolerance)
 		var right = ramer_douglas_peucker(points.slice(index), tolerance)
 
@@ -28,11 +28,11 @@ static func ramer_douglas_peucker(points: PackedVector2Array, tolerance: float) 
 
 	return [start, end]
 
-static func perpendicular_distance(point: Vector2, lineStart: Vector2, lineEnd: Vector2) -> float:
-	if lineStart == lineEnd:
-		return point.distance_to(lineStart)
-	var line = lineEnd - lineStart
-	var projection = lineStart + (point - lineStart).dot(line.normalized()) * line.normalized()
+static func perpendicular_distance(point: Vector2, line_start: Vector2, line_end: Vector2) -> float:
+	if line_start == line_end:
+		return point.distance_to(line_start)
+	var line = line_end - line_start
+	var projection = line_start + (point - line_start).dot(line.normalized()) * line.normalized()
 	return point.distance_to(projection)
 
 static func line_collides_with_polygon(line_a: Vector2, line_b: Vector2, polygon_points: PackedVector2Array) -> bool:
