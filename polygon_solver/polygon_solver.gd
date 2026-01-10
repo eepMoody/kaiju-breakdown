@@ -39,6 +39,7 @@ func _process(_delta: float) -> void:
 		current_state = State.SLICING
 
 		for target in targets:
+			target.color = Color.WHITE
 			target.set_script(null)
 
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
@@ -65,33 +66,30 @@ func handle_slicing() -> void:
 		temp_line.add_point(input_position)
 		temp_line.add_point(input_position)
 
-		for target in targets:
-			target.color = Color.WHITE
-
 	if Input.is_action_just_released("Click"):
-		is_pressed = false
-
 		if abs(temp_line.points[0].distance_to(temp_line.points[1])) > 10:
-			var matchedTargets = Utilities.find_polygon_matches(targets, temp_line.points[0], temp_line.points[1])
+			var matched_targets = Utilities.find_polygon_matches(targets, temp_line.points[0], temp_line.points[1])
 
 			var polyline = Utilities.create_polyline(temp_line.points[0], temp_line.points[1], 20)
 
-			for matchedTarget in matchedTargets:
-				var slicedPolygons = Utilities.slice_polygon(matchedTarget, polyline)
+			for matched_target in matched_targets:
+				var sliced_polygons = Utilities.slice_polygon(matched_target, polyline)
 
-				for slicedPolygon in slicedPolygons:
+				for sliced_polygon in sliced_polygons:
 					var polygon = Polygon2D.new()
-					polygon.polygon = slicedPolygon
+					polygon.polygon = sliced_polygon
 					add_child(polygon)
 					targets.push_back(polygon)
 
-				matchedTarget.queue_free()
-				targets.erase(matchedTarget)
+				matched_target.queue_free()
+				targets.erase(matched_target)
 
-			temp_line.clear_points()
+		is_pressed = false
 
 	if is_pressed:
 		temp_line.points[1] = input_position
+	else:
+		temp_line.clear_points()
 
 func handle_grabbing() -> void:
 	pass

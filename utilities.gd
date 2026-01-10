@@ -51,7 +51,7 @@ static func find_polygon_matches(polygons: Array[Polygon2D], point_a: Vector2, p
 	var matches: Array[Polygon2D]
 
 	for polygon in polygons:
-		if Utilities.line_collides_with_polygon(point_a, point_b, polygon.polygon):
+		if Utilities.line_collides_with_polygon(point_a, point_b, polygon.global_transform * polygon.polygon):
 			matches.push_back(polygon)
 
 	return matches

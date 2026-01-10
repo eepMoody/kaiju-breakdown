@@ -12,6 +12,13 @@ func _process(_delta: float) -> void:
 	if input_held:
 		position = get_global_mouse_position() - input_grab_offset
 
+	var input_position = get_global_mouse_position()
+
+	if Geometry2D.is_point_in_polygon(input_position, global_transform * polygon):
+		color = Color.GREEN
+	else:
+		color = Color.WHITE
+
 func _input(event):
 	var mouse_pos = get_local_mouse_position()
 
