@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://b6i2s63ev87vl"]
+
+[ext_resource type="Texture2D" uid="uid://br3ojoqxjxq2s" path="res://overworld/sprites/ground.png" id="1_uv0ws"]
+[ext_resource type="PackedScene" uid="uid://c7atc07n4dk6r" path="res://overworld/dead_kaiju.tscn" id="3_dpmfx"]
+[ext_resource type="PackedScene" uid="uid://bmeuydq3hpwr5" path="res://overworld/player.tscn" id="3_player"]
+
+[node name="OverworldPrototype" type="Node2D"]
+
+[node name="Ground" type="Sprite2D" parent="."]
+position = Vector2(1888.0001, 1856.0001)
+scale = Vector2(1.3717296, 1.7984496)
+texture = ExtResource("1_uv0ws")
+
+[node name="Player" parent="." instance=ExtResource("3_player")]
+position = Vector2(2122, 2380)
+
+[node name="DeadKaiju" parent="." instance=ExtResource("3_dpmfx")]
+position = Vector2(1856, 1027)

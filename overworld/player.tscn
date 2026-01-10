@@ -1,0 +1,74 @@
+[gd_scene load_steps=9 format=3 uid="uid://bmeuydq3hpwr5"]
+
+[ext_resource type="Script" uid="uid://dwau8j2fckfuy" path="res://overworld/player.gd" id="1_1c3vx"]
+[ext_resource type="Texture2D" uid="uid://bcqwo1ff88a1f" path="res://overworld/sprites/MC Sprite 1.png" id="2_ks6t6"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ks6t6"]
+atlas = ExtResource("2_ks6t6")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_skewn"]
+atlas = ExtResource("2_ks6t6")
+region = Rect2(0, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_d1sw6"]
+atlas = ExtResource("2_ks6t6")
+region = Rect2(128, 0, 128, 128)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_suda4"]
+atlas = ExtResource("2_ks6t6")
+region = Rect2(256, 0, 128, 128)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ivy7t"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ks6t6")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_skewn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_d1sw6")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_skewn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_suda4")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ks6t6"]
+size = Vector2(73, 114)
+
+[node name="Player" type="CharacterBody2D"]
+position = Vector2(0, 1)
+collision_layer = 3
+collision_mask = 3
+script = ExtResource("1_1c3vx")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+sprite_frames = SubResource("SpriteFrames_ivy7t")
+animation = &"idle"
+frame_progress = 0.9245966
+
+[node name="Camera2D" type="Camera2D" parent="."]
+limit_left = 0
+limit_top = 0
+limit_right = 3500
+limit_bottom = 3500
+limit_smoothed = true
+position_smoothing_enabled = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-23.5, 0)
+shape = SubResource("RectangleShape2D_ks6t6")
