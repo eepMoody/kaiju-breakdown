@@ -41,6 +41,8 @@ func _process(_delta: float) -> void:
 		for target in targets:
 			target.set_script(null)
 
+		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
+
 	elif Input.is_action_just_pressed("Grabbing"):
 		current_state = State.GRABBING
 
