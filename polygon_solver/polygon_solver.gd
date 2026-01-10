@@ -24,15 +24,13 @@ func _ready() -> void:
 	temp_line.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
 	get_parent().call_deferred("add_child", temp_line)
 
-	# Clean up any null entries that might exist
+	# Clean up null entries the editor sometimes leaves behind
 	clean_targets()
 
 	for target in targets:
-		if target:
-			target.set_script(pick_up_script)
+		target.set_script(pick_up_script)
 
 func clean_targets() -> void:
-	# Remove null entries from the targets array
 	targets = targets.filter(func(t): return t != null)
 
 func _process(_delta: float) -> void:
@@ -47,9 +45,8 @@ func _process(_delta: float) -> void:
 		current_state = State.SLICING
 
 		for target in targets:
-			if target:
-				target.color = Color.WHITE
-				target.set_script(null)
+			target.color = Color.WHITE
+			target.set_script(null)
 
 		Input.set_default_cursor_shape(Input.CURSOR_ARROW)
 
@@ -57,10 +54,9 @@ func _process(_delta: float) -> void:
 		current_state = State.GRABBING
 
 		for target in targets:
-			if target:
-				target.set_script(pick_up_script)
-				target.set_process(true)
-				target.set_process_input(true)
+			target.set_script(pick_up_script)
+			target.set_process(true)
+			target.set_process_input(true)
 
 	if current_state == State.SLICING:
 		handle_slicing()
@@ -85,17 +81,14 @@ func handle_slicing() -> void:
 			for matched_target in matched_targets:
 				var sliced_polygons = Utilities.slice_polygon(matched_target, polyline)
 
-				# Get the world vertices and UVs for this polygon
 				var original_world_verts = matched_target.global_transform * matched_target.polygon
 				var original_uvs = matched_target.uv
 
 				for sliced_polygon in sliced_polygons:
 					var polygon = Polygon2D.new()
 
-					# Keep vertices in world space (identity transform)
 					polygon.polygon = sliced_polygon
 
-					# Calculate UVs using interpolation from the polygon's current vertices/UVs
 					if matched_target.texture and original_uvs.size() >= 3:
 						polygon.uv = Utilities.interpolate_uvs_for_sliced_polygon(
 							sliced_polygon,
@@ -105,12 +98,10 @@ func handle_slicing() -> void:
 
 					polygon.texture = matched_target.texture
 					polygon.color = matched_target.color
-					# New polygons have identity transform (position/rotation/scale stay at defaults)
 
 					add_child(polygon)
 					targets.push_back(polygon)
 
-				# Clean up the old polygon
 				matched_target.queue_free()
 				targets.erase(matched_target)
 

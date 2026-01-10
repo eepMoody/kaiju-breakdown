@@ -85,13 +85,12 @@ static func get_global_polygon_position(polygon: Polygon2D) -> PackedVector2Arra
 
 static func interpolate_uvs_for_sliced_polygon(sliced_vertices: PackedVector2Array, original_world_vertices: PackedVector2Array, original_uvs: PackedVector2Array) -> PackedVector2Array:
 	var uvs = PackedVector2Array()
-	var vertex_epsilon = 0.01  # Very tight for exact vertex matches
+	var vertex_epsilon = 0.01  # "exact" match tolerance to account for floating point errors
 
 	for sliced_vert in sliced_vertices:
 		var found_uv = Vector2.ZERO
 		var found = false
 
-		# First, check for exact vertex match (very tight tolerance)
 		for i in range(original_world_vertices.size()):
 			if sliced_vert.distance_to(original_world_vertices[i]) < vertex_epsilon:
 				found_uv = original_uvs[i]
@@ -155,14 +154,7 @@ static func barycentric_interpolate_uv(point: Vector2, vertices: PackedVector2Ar
 
 	for i in range(vertices.size()):
 		var dist = point.distance_to(vertices[i])
-		if dist < 0.0001:
-			# Treat as exact match
-			return uvs[i]
 		var weight = 1.0 / (dist * dist)
 		weighted_uv += uvs[i] * weight
 		total_weight += weight
-
-	if total_weight > 0.0001:
 		return weighted_uv / total_weight
-
-	return uvs[0] # just in case, to avoid an error
