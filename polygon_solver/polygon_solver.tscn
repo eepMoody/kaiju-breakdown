@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://brg0p7cbfvmbn"]
+[gd_scene load_steps=3 format=3 uid="uid://brg0p7cbfvmbn"]
 
-[ext_resource type="Script" uid="uid://dru5vb3ehejq1" path="res://polygon-solver/polygon_solver.gd" id="1_aphri"]
+[ext_resource type="Script" uid="uid://dru5vb3ehejq1" path="res://polygon_solver/polygon_solver.gd" id="1_aphri"]
+[ext_resource type="Texture2D" uid="uid://rlybotw3j7in" path="res://polygon_solver/textures/IMG_0920.jpg" id="2_kt5js"]
 
 [node name="PolygonSolver" type="Node2D"]
 
@@ -8,17 +9,15 @@
 
 [node name="Targets" type="Node2D" parent="." node_paths=PackedStringArray("targets", "current_state_label")]
 script = ExtResource("1_aphri")
-targets = [NodePath("Polygon2D"), NodePath("Polygon2D2"), NodePath("Polygon2D3")]
+targets = [NodePath("Polygon2D")]
 current_state_label = NodePath("../Label")
 
 [node name="Polygon2D" type="Polygon2D" parent="Targets"]
-polygon = PackedVector2Array(-465, -232, -523, -116, -423, -29, -312, -104, -332, -223)
-
-[node name="Polygon2D2" type="Polygon2D" parent="Targets"]
-polygon = PackedVector2Array(230, -247, 141, 78, 470, -29)
-
-[node name="Polygon2D3" type="Polygon2D" parent="Targets"]
-polygon = PackedVector2Array(-361, 59, -188, 59, -197, 255, -347, 254)
+position = Vector2(-343.48364, -454.15854)
+scale = Vector2(0.33043998, 0.40553388)
+texture = ExtResource("2_kt5js")
+polygon = PackedVector2Array(713.4076, 320.60635, 752.38525, 969.5181, 483.44678, 1402.7521, 875.6198, 1680.2112, 1304.0703, 1651.1289, 1619.7178, 1262.6279, 1442.5048, 912.886, 1317.6609, 207.13904)
+uv = PackedVector2Array(713.58203, 320.57147, 752.38525, 969.5181, 483.44678, 1402.7521, 875.6198, 1680.2112, 1304.0703, 1651.1289, 1619.7178, 1262.6279, 1442.5048, 912.886, 1317.6609, 207.13904)
 
 [node name="Label" type="Label" parent="."]
 offset_left = -552.0
