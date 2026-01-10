@@ -23,7 +23,6 @@ func _ready() -> void:
 	part_id = name
 
 	_set_highlight(false)
-
 func _on_body_entered(_body: Node2D) -> void:
 	is_active = true
 	get_tree().call_group("kaiju_manager", "_notify_area_entered", self)
@@ -35,8 +34,7 @@ func _on_body_exited(_body: Node2D) -> void:
 func _input(event: InputEvent) -> void:
 	if is_active and event.is_action_pressed("interact"):
 		get_tree().call_group("kaiju_manager", "_notify_interaction", self)
-		get_viewport().set_input_as_handled()
-		print("Interacted with InteractableArea: ", part_id)
+
 
 func show_highlight() -> void:
 	_set_highlight(true)

@@ -21,5 +21,4 @@ func _notify_area_exited(area: InteractableArea) -> void:
 
 func _notify_interaction(area: InteractableArea) -> void:
 	if area.interaction_scene:
-		var instance = area.interaction_scene.instantiate()
-		get_tree().root.add_child(instance)
+		get_tree().change_scene_to_packed(area.interaction_scene)

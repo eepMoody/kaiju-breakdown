@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://dfvbntt3kivaq" path="res://overworld/dead_kaiju.gd" id="1_3hp8j"]
 [ext_resource type="Texture2D" uid="uid://d2kbs55wjuvth" path="res://overworld/sprites/KaijuBg.png" id="1_4nr2b"]
 [ext_resource type="PackedScene" uid="uid://fvu8618gygwg" path="res://overworld/interactable_area.tscn" id="3_3hp8j"]
+[ext_resource type="PackedScene" uid="uid://brg0p7cbfvmbn" path="res://polygon_solver/polygon_solver.tscn" id="4_polygon"]
 
 [sub_resource type="Curve2D" id="Curve2D_3hp8j"]
 resource_local_to_scene = true
@@ -37,6 +38,7 @@ build_mode = 1
 polygon = PackedVector2Array(-417, -88, -247, -94, -66, -158, 71, -233, 144, -245, 164, -216, 233, -199, 187, -93, 311, 167, 363, 202, 440, 229, 500, 221, 525, 163, 536, 43, 362, -107, 454, -142, 524, -183, 642, -171, 665, -125, 644, 65, 787, 144, 871, 222, 1030, 225, 1123, 127, 1175, -175, 1231, -379, 1087, -508, 1008, -666, 1025, -776, 896, -788, 722, -870, 664, -963, 563, -904, 330, -916, 226, -997, 124, -912, -56, -901, -144, -966, -237, -874, -392, -834, -475, -884, -564, -781, -720, -719, -833, -748, -877, -620, -996, -485, -1104, -481, -1076, -358, -1147, -210, -1248, -182, -1179, -108, -1204, 105, -1256, 135, -1212, 191, -1182, 369, -1214, 411, -1162, 449, -1116, 602, -1038, 777, -915, 954, -872, 916, -973, 586, -973, 310, -904, 100, -875, 178, -564, 376, -656, 520, -582, 512, -601, 683, -476, 715, -415, 705, -383, 480, -293, 492, -293, 616, -111, 600, -136, 458, -321, 197, -546, 63)
 
 [node name="PawInteraction" parent="." instance=ExtResource("3_3hp8j")]
+interaction_scene = ExtResource("4_polygon")
 
 [node name="HighlightPath" parent="PawInteraction" index="0"]
 curve = SubResource("Curve2D_3hp8j")
@@ -52,6 +54,7 @@ shape = SubResource("CapsuleShape2D_3hp8j")
 
 [node name="Foot Interaction" parent="." instance=ExtResource("3_3hp8j")]
 position = Vector2(-238, 440)
+interaction_scene = ExtResource("4_polygon")
 
 [node name="HighlightPath" parent="Foot Interaction" index="0"]
 curve = SubResource("Curve2D_2hue0")
