@@ -148,7 +148,9 @@ static func barycentric_interpolate_uv(point: Vector2, vertices: PackedVector2Ar
 
 			return uv0 * u + uv1 * v + uv2 * w
 
-	# else (for concave points), use weighted average based on distance to all vertices (more expensive, less accurate)
+	# For points that fail the barycentric check,
+	# use weighted average based on distance to all vertices (more expensive, less accurate)
+
 	var total_weight = 0.0
 	var weighted_uv = Vector2.ZERO
 
@@ -158,3 +160,5 @@ static func barycentric_interpolate_uv(point: Vector2, vertices: PackedVector2Ar
 		weighted_uv += uvs[i] * weight
 		total_weight += weight
 		return weighted_uv / total_weight
+
+	return uvs[0]

@@ -26,6 +26,9 @@ func _ready() -> void:
 
 	# Clean up null entries the editor sometimes leaves behind
 	clean_targets()
+	for child in get_children():
+		if child is Polygon2D:
+			targets.push_back(child)
 
 	for target in targets:
 		target.set_script(pick_up_script)
