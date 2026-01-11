@@ -74,18 +74,9 @@ static func create_polyline(point_a: Vector2, point_b: Vector2, width: int) -> P
 
 	return polygon
 
-static func slice_polygon(poly_a_node: Polygon2D, poly_b_node: Polygon2D):
-	return Geometry2D.clip_polygons(
-		get_global_polygon_position(poly_a_node),
-		get_global_polygon_position(poly_b_node)
-	)
-
-static func get_global_polygon_position(polygon: Polygon2D) -> PackedVector2Array:
-	return polygon.global_transform * polygon.polygon
-
 static func interpolate_uvs_for_sliced_polygon(sliced_vertices: PackedVector2Array, original_world_vertices: PackedVector2Array, original_uvs: PackedVector2Array) -> PackedVector2Array:
 	var uvs = PackedVector2Array()
-	var vertex_epsilon = 0.01  # "exact" match tolerance to account for floating point errors
+	var vertex_epsilon = 0.01 # "exact" match tolerance to account for floating point errors
 
 	for sliced_vert in sliced_vertices:
 		var found_uv = Vector2.ZERO
@@ -105,7 +96,6 @@ static func interpolate_uvs_for_sliced_polygon(sliced_vertices: PackedVector2Arr
 	return uvs
 
 static func barycentric_interpolate_uv(point: Vector2, vertices: PackedVector2Array, uvs: PackedVector2Array) -> Vector2:
-
 	if vertices.size() < 3:
 		return Vector2.ZERO
 

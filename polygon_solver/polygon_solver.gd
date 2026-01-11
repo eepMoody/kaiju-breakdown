@@ -82,7 +82,10 @@ func handle_slicing() -> void:
 			var polyline = Utilities.create_polyline(temp_line.points[0], temp_line.points[1], 20)
 
 			for matched_target in matched_targets:
-				var sliced_polygons = Utilities.slice_polygon(matched_target, polyline)
+				var sliced_polygons = Geometry2D.clip_polygons(
+					matched_target.global_transform * matched_target.polygon,
+					polyline.global_transform * polyline.polygon
+				)
 
 				var original_world_verts = matched_target.global_transform * matched_target.polygon
 				var original_uvs = matched_target.uv
