@@ -24,8 +24,17 @@ func _ready() -> void:
 	temp_line.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
 	get_parent().call_deferred("add_child", temp_line)
 
+	# Clean up null entries the editor sometimes leaves behind
+	clean_targets()
+	for child in get_children():
+		if child is Polygon2D:
+			targets.push_back(child)
+
 	for target in targets:
 		target.set_script(pick_up_script)
+
+func clean_targets() -> void:
+	targets = targets.filter(func(t): return t != null)
 
 func _process(_delta: float) -> void:
 	if current_state_label:
@@ -75,9 +84,24 @@ func handle_slicing() -> void:
 			for matched_target in matched_targets:
 				var sliced_polygons = Utilities.slice_polygon(matched_target, polyline)
 
+				var original_world_verts = matched_target.global_transform * matched_target.polygon
+				var original_uvs = matched_target.uv
+
 				for sliced_polygon in sliced_polygons:
 					var polygon = Polygon2D.new()
+
 					polygon.polygon = sliced_polygon
+
+					if matched_target.texture and original_uvs.size() >= 3:
+						polygon.uv = Utilities.interpolate_uvs_for_sliced_polygon(
+							sliced_polygon,
+							original_world_verts,
+							original_uvs
+						)
+
+					polygon.texture = matched_target.texture
+					polygon.color = matched_target.color
+
 					add_child(polygon)
 					targets.push_back(polygon)
 
