@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://dfuqqgewomnoj"]
+
+[ext_resource type="Script" uid="uid://dru5vb3ehejq1" path="res://polygon_solver/polygon_solver.gd" id="1_i7lor"]
+[ext_resource type="Script" uid="uid://6sqp4v7dtww8" path="res://gravity_demo/fps.gd" id="2_ga55x"]
+
+[node name="GravityDemo" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Targets" type="Node2D" parent="."]
+script = ExtResource("1_i7lor")
+
+[node name="Polygon2D" type="Polygon2D" parent="Targets"]
+position = Vector2(5, -63)
+polygon = PackedVector2Array(-384, -222, 395, -231, 396, 275, 272, 270, 271, 47, 153, 48, 155, 188, 56, 191, 51, 58, -67, 54, -60, 261, -163, 260, -167, 63, -280, 57, -270, 215, -389, 207)
+
+[node name="Label" type="Label" parent="."]
+offset_left = -558.0
+offset_top = -303.0
+offset_right = -518.0
+offset_bottom = -280.0
+text = "0FPS"
+script = ExtResource("2_ga55x")
