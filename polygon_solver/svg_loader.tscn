@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://ba6funw8fcfv6"]
+
+[ext_resource type="Script" uid="uid://c0uxhxbtgffle" path="res://polygon_solver/svg_loader.gd" id="1_etqkj"]
+[ext_resource type="Texture2D" uid="uid://dqwo6xyy0ja60" path="res://polygon_solver/textures/paper.svg" id="2_iijpf"]
+
+[node name="SvgLoader" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(545, 294)
+
+[node name="Loader" type="Node2D" parent="."]
+script = ExtResource("1_etqkj")
+texture = ExtResource("2_iijpf")
