@@ -1,13 +1,26 @@
-[gd_scene load_steps=3 format=3 uid="uid://ba6funw8fcfv6"]
+[gd_scene load_steps=5 format=3 uid="uid://ba6funw8fcfv6"]
 
 [ext_resource type="Script" uid="uid://c0uxhxbtgffle" path="res://polygon_solver/svg_loader.gd" id="1_etqkj"]
-[ext_resource type="Texture2D" uid="uid://dqwo6xyy0ja60" path="res://polygon_solver/textures/paper.svg" id="2_iijpf"]
+[ext_resource type="Texture2D" uid="uid://rxuk6a5e1msr" path="res://polygon_solver/textures/paw-vector.png" id="2_iijpf"]
+[ext_resource type="Texture2D" uid="uid://br3ojoqxjxq2s" path="res://overworld/sprites/ground.png" id="3_fret4"]
+[ext_resource type="Script" uid="uid://dru5vb3ehejq1" path="res://polygon_solver/polygon_solver.gd" id="4_p3gkr"]
 
 [node name="SvgLoader" type="Node2D"]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(545, 294)
 
-[node name="Loader" type="Node2D" parent="."]
+[node name="Loader" type="Node2D" parent="." node_paths=PackedStringArray("target_parent", "polygon_solver")]
 script = ExtResource("1_etqkj")
 texture = ExtResource("2_iijpf")
+target_parent = NodePath("../Slicer")
+polygon_solver = NodePath("../Slicer")
+
+[node name="Ground" type="Sprite2D" parent="."]
+visible = false
+position = Vector2(1347, 1004)
+texture = ExtResource("3_fret4")
+
+[node name="Slicer" type="Node2D" parent="." node_paths=PackedStringArray("targets")]
+script = ExtResource("4_p3gkr")
+targets = [null]

@@ -1,5 +1,7 @@
 extends Node2D
 
+class_name PolygonSolver
+
 enum State {
   SLICING,
   GRABBING
@@ -24,11 +26,15 @@ var next_tick: float
 func _ready() -> void:
 	temp_line = Line2D.new()
 	temp_line.width = 20
-	temp_line.default_color = Color.TRANSPARENT
+	temp_line.default_color = Color.RED
 	temp_line.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
 	get_parent().call_deferred("add_child", temp_line)
 
 	# Clean up null entries the editor sometimes leaves behind
+	reset_targets()
+
+func reset_targets() -> void:
+	print("reset targets")
 	clean_targets()
 	for child in get_children():
 		if child is Polygon2D:
@@ -36,6 +42,8 @@ func _ready() -> void:
 
 	for target in targets:
 		target.set_script(pick_up_script)
+
+	print(targets.size())
 
 func clean_targets() -> void:
 	targets = targets.filter(func(t): return t != null)
@@ -75,17 +83,6 @@ func handle_slicing(delta: float) -> void:
 
 	next_tick -= delta
 
-	if is_pressed and temp_line.points.size() > 1 and next_tick < 0:
-		handle_slicing_end(godot_polygon_slice_plugin.ramer_douglas_peucker(temp_line.points, 10))
-		if particles:
-			var p = particles.instantiate()
-			p.position = input_position
-			p.finished.connect(p.queue_free)
-			p.emitting = true
-			get_parent().add_child(p)
-
-		next_tick = 0.1
-
 	if Input.is_action_just_pressed("Click"):
 		is_pressed = true
 		temp_line.clear_points()
@@ -95,6 +92,8 @@ func handle_slicing(delta: float) -> void:
 	if Input.is_action_just_released("Click"):
 		is_pressed = false
 
+		handle_slicing_end(godot_polygon_slice_plugin.ramer_douglas_peucker(temp_line.points, 10))
+
 	if is_pressed:
 		temp_line.add_point(input_position)
 	else:
@@ -102,7 +101,6 @@ func handle_slicing(delta: float) -> void:
 
 func handle_grabbing() -> void:
 	pass
-
 
 func find_target_matches(points: PackedVector2Array) -> Array[Polygon2D]:
 	var matches: Array[Polygon2D]

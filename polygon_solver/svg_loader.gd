@@ -2,10 +2,16 @@ extends Node
 
 @export var texture: Texture2D
 
-func _ready():
-	var paper_polygon = load_svg_as_polygon2d("res://polygon_solver/textures/paper.svg")
+@export var target_parent: Node
 
-	get_parent().call_deferred("add_child", paper_polygon)
+@export var polygon_solver: PolygonSolver
+
+func _ready():
+	var paper_polygon = load_svg_as_polygon2d("res://polygon_solver/textures/paw-vector.svg")
+
+	target_parent.call_deferred("add_child", paper_polygon)
+
+	polygon_solver.call_deferred("reset_targets")
 
 func load_svg_as_polygon2d(path: String) -> Polygon2D:
 	var polygon = Polygon2D.new()
@@ -23,7 +29,20 @@ func load_svg_as_polygon2d(path: String) -> Polygon2D:
 
 					polygon.polygon = parse_path_into_points(d)
 
-	polygon.texture = texture
+					print(polygon.polygon.size())
+
+					polygon.polygon = godot_polygon_slice_plugin.ramer_douglas_peucker(polygon.polygon, 200)
+
+					if Geometry2D.is_polygon_clockwise(polygon.polygon):
+						print("clockwise")
+					else:
+						print("not clockwise")
+
+					print(polygon.polygon.size())
+
+	# polygon.texture = texture
+	polygon.color = Color.WHITE
+	polygon.scale = Vector2.ONE * 0.25
 
 	return polygon
 
@@ -32,13 +51,12 @@ func parse_path_into_points(path_data: String) -> PackedVector2Array:
 	var cursor = Vector2.ZERO
 
 	var regex = RegEx.new()
-	regex.compile("([a-zA-Z])|(-?[0-9.]*)")
+	regex.compile("([a-zA-Z])|(-?[0-9.]+)")
 
 	var tokens: Array = []
 	for m in regex.search_all(path_data):
 		var s = m.get_string()
-		if s != "":
-			tokens.push_back(s)
+		if s != "": tokens.push_back(s)
 
 	var cmd = ""
 	while tokens.size() > 0:
@@ -58,11 +76,17 @@ func parse_path_into_points(path_data: String) -> PackedVector2Array:
 				)
 				points.append(cursor)
 				if cmd == "M": cmd = "L"
-			"H":
-				cursor.x = t.to_float()
-				points.append(cursor)
-			"V":
-				cursor.y = t.to_float()
-				points.append(cursor)
+			"C":
+				var cp1 = Vector2(t.to_float(), tokens.pop_front().to_float())
+				var cp2 = Vector2(tokens.pop_front().to_float(), tokens.pop_front().to_float())
+				var dest = Vector2(tokens.pop_front().to_float(), tokens.pop_front().to_float())
+
+				var segments = 12
+				for i in range(1, segments + 1):
+					var weight = i / float(segments)
+					var curve_pt = cursor.bezier_interpolate(cp1, cp2, dest, weight)
+					points.append(curve_pt)
+
+				cursor = dest
 
 	return points
