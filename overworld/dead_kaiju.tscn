@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://c7atc07n4dk6r"]
+[gd_scene load_steps=8 format=3 uid="uid://c7atc07n4dk6r"]
 
 [ext_resource type="Script" uid="uid://dfvbntt3kivaq" path="res://overworld/dead_kaiju.gd" id="1_3hp8j"]
 [ext_resource type="Texture2D" uid="uid://d2kbs55wjuvth" path="res://overworld/sprites/KaijuBg.png" id="1_4nr2b"]
@@ -13,8 +13,8 @@ _data = {
 point_count = 12
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_3hp8j"]
-radius = 143.80457
-height = 448.77048
+radius = 148.18808
+height = 539.8473
 
 [sub_resource type="Curve2D" id="Curve2D_2hue0"]
 resource_local_to_scene = true
@@ -48,8 +48,8 @@ points = PackedVector2Array(310, 163, 308.66357, 160.02393, 307.0584, 156.4494, 
 default_color = Color(1, 1, 0, 1)
 
 [node name="CollisionShape2" parent="PawInteraction" index="1"]
-position = Vector2(384.7981, 51.458183)
-rotation = -0.42062438
+position = Vector2(367, 18)
+rotation = -0.52534413
 shape = SubResource("CapsuleShape2D_3hp8j")
 
 [node name="Foot Interaction" parent="." instance=ExtResource("3_3hp8j")]
@@ -58,6 +58,9 @@ interaction_scene = ExtResource("4_polygon")
 
 [node name="HighlightPath" parent="Foot Interaction" index="0"]
 curve = SubResource("Curve2D_2hue0")
+
+[node name="CollisionShape2" parent="Foot Interaction" index="1"]
+position = Vector2(-10.555817, 1)
 
 [editable path="PawInteraction"]
 [editable path="Foot Interaction"]

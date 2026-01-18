@@ -11,7 +11,7 @@ _data = {
 point_count = 12
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_717tg"]
-size = Vector2(279.7767, 457.27454)
+size = Vector2(300.88837, 457.27454)
 
 [node name="InteractableArea" type="Area2D"]
 collision_mask = 0
