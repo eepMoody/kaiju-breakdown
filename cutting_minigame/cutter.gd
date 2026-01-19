@@ -101,7 +101,7 @@ func _perform_slice() -> void:
 	var sliced_polygons = godot_polygon_slice_plugin.slice_polygons_with_polyline(matched_targets, polyline)
 
 	for polygon in sliced_polygons:
-		add_child(polygon)
+		get_parent().add_child(polygon)
 		targets.push_back(polygon)
 
 	for matched_target in matched_targets:
