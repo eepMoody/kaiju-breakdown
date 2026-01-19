@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://db7res2caa1kw"]
+
+[ext_resource type="Script" uid="uid://dru5vb3ehejq1" path="res://polygon_solver/polygon_solver.gd" id="1_xp72v"]
+
+[node name="PolygonSlideSandbox" type="Node2D"]
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Targets" type="Node2D" parent="."]
+script = ExtResource("1_xp72v")
+
+[node name="Polygon2D" type="Polygon2D" parent="Targets"]
+position = Vector2(-203, -272)
+scale = Vector2(0.25, 0.25)
+polygon = PackedVector2Array(679.008, 0, 1398.122, 0, 1367.3888, 632.00024, 1744.8195, 1223.6959, 1382.4192, 1877.7546, 934.28186, 2019.8252, 360.21115, 1672.4402, 679.008, 0)
