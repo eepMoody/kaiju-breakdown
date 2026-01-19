@@ -89,7 +89,7 @@ func handle_slicing_input(delta: float) -> void:
 			godot_polygon_slice_plugin.ramer_douglas_peucker(temp_line.points, 10)
 		, 20)
 
-		var matched_targets = godot_polygon_slice_plugin.find_polygon_matches(polyline.polygon, targets)
+		var matched_targets = godot_polygon_slice_plugin.find_polygon_matches(targets, polyline.polygon)
 		var polygons = godot_polygon_slice_plugin.slice_polygons_with_polyline(matched_targets, polyline)
 
 		for polygon in polygons:
