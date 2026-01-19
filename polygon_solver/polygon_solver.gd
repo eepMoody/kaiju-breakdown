@@ -85,7 +85,7 @@ func handle_slicing_input(delta: float) -> void:
 		, 20)
 
 		var matched_targets = godot_polygon_slice_plugin.find_polygon_matches(polyline.polygon, targets)
-		var polygons = handle_slicing_end(polyline, matched_targets)
+		var polygons = godot_polygon_slice_plugin.slice_polygons_with_polyline(matched_targets, polyline)
 
 		for polygon in polygons:
 			add_child(polygon)
@@ -99,14 +99,3 @@ func handle_slicing_input(delta: float) -> void:
 		temp_line.add_point(input_position)
 	else:
 		temp_line.clear_points()
-
-static func handle_slicing_end(polyline: Polygon2D, matched_targets: Array[Polygon2D]) -> Array[Polygon2D]:
-	var new_polygons: Array[Polygon2D]
-
-	for matched_target in matched_targets:
-		var sliced_polygons = godot_polygon_slice_plugin.slice_polygon_with_polyline(matched_target, polyline)
-
-		for sliced_polygon in sliced_polygons:
-			new_polygons.push_back(sliced_polygon)
-
-	return new_polygons
