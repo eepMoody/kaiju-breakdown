@@ -1,5 +1,7 @@
 extends Node2D
 
+class_name PolygonSolver
+
 enum State {
   SLICING,
   GRABBING
@@ -27,6 +29,9 @@ func _ready() -> void:
 	get_parent().call_deferred("add_child", temp_line)
 
 	# Clean up null entries the editor sometimes leaves behind
+	reset_targets()
+
+func reset_targets() -> void:
 	clean_targets()
 	for child in get_children():
 		if child is Polygon2D:
