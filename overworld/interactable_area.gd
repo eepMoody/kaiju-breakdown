@@ -1,6 +1,5 @@
-# interactable_area.gd - SIMPLIFIED
 class_name InteractableArea
-extends Area2D  # Area2D directly, not Node2D parent!
+extends Area2D
 
 signal interacted(area: InteractableArea)
 
@@ -15,14 +14,14 @@ signal interacted(area: InteractableArea)
 var is_active: bool = false
 
 func _ready() -> void:
-	collision_layer = 2  # Interactables
-	collision_mask = 1   # Player
-
+	collision_layer = 2
+	collision_mask = 1
 	body_entered.connect(_on_body_entered)
 	body_exited.connect(_on_body_exited)
 	part_id = name
+	if highlight:
+		highlight.visible = false
 
-	_set_highlight(false)
 func _on_body_entered(_body: Node2D) -> void:
 	is_active = true
 	get_tree().call_group("kaiju_manager", "_notify_area_entered", self)
@@ -35,13 +34,10 @@ func _input(event: InputEvent) -> void:
 	if is_active and event.is_action_pressed("interact"):
 		get_tree().call_group("kaiju_manager", "_notify_interaction", self)
 
-
 func show_highlight() -> void:
-	_set_highlight(true)
+	if highlight:
+		highlight.visible = true
 
 func hide_highlight() -> void:
-	_set_highlight(false)
-
-func _set_highlight(visible: bool) -> void:
 	if highlight:
-		highlight.visible = visible
+		highlight.visible = false

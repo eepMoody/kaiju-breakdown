@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://b6m2ywq0gxh51"]
+
+[ext_resource type="Script" path="res://cutting_minigame/cutting_minigame.gd" id="1_cutting"]
+
+[node name="CuttingMinigame" type="Node2D"]
+script = ExtResource("1_cutting")
+
+[node name="Camera2D" type="Camera2D" parent="."]
