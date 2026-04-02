@@ -27,6 +27,10 @@ var cutter: Node2D
 var part_polygon: Polygon2D
 var background: ColorRect
 
+var _slice_shake: float = 0.0
+
+@onready var camera: Camera2D = $Camera2D
+
 func _ready() -> void:
 	part_polygon = Polygon2D.new()
 	if kaiju_part_polygon.size() > 0:
@@ -57,8 +61,16 @@ func _ready() -> void:
 	cutter = Node2D.new()
 	cutter.set_script(cutter_script)
 	add_child(cutter)
+	cutter.slice_impact.connect(_on_cutter_slice_impact)
 
 func _process(delta: float) -> void:
+	_slice_shake = move_toward(_slice_shake, 0.0, delta * CuttingConfig.SLICE_SHAKE_DECAY)
+	if camera:
+		if _slice_shake > 0.01:
+			camera.offset = Vector2(randf_range(-1.0, 1.0), randf_range(-1.0, 1.0)) * _slice_shake
+		else:
+			camera.offset = Vector2.ZERO
+
 	if current_state == State.DRAGGING:
 		drag_current_position = get_global_mouse_position()
 		var direction_vector = drag_current_position - click_start_position
@@ -121,12 +133,24 @@ func _on_left_click_released() -> void:
 				current_state = State.IDLE
 
 		State.CUTTING:
+			var blade_center = cutter.get_blade_center_in_parent_space()
 			cutter.stop_cutting()
 			click_start_position = cutter.get_current_position()
 			base_direction_angle = cutter.get_current_direction()
-			arc_display.start_oscillation(click_start_position, base_direction_angle)
+			arc_display.start_oscillation(
+				click_start_position,
+				base_direction_angle,
+				blade_center,
+				CuttingConfig.CURSOR_TRANSITION_DURATION
+			)
 			current_state = State.OSCILLATING
 
 func _exit_oscillation() -> void:
 	arc_display.stop_oscillation()
 	current_state = State.IDLE
+
+func _on_cutter_slice_impact() -> void:
+	_slice_shake = CuttingConfig.SLICE_SHAKE_STRENGTH
+	Input.vibrate_handheld(40)
+	for joy in Input.get_connected_joypads():
+		Input.start_joy_vibration(joy, 0.28, 0.55, 0.11)
