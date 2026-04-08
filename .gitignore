@@ -3,7 +3,7 @@
 /android/
 
 # Managed addons (installed by ./setup.sh, see addons.cfg)
-addons/dialogic/
+addons/**
 
 # Mac OS specific ignores
 .DS_Store/
