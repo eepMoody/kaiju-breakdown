@@ -1,0 +1,11 @@
+join "Construction Worker" center
+"Construction Worker": Hey, you can't park there!
+- Fuck you, buddy
+	"Construction Worker": Fuck you too, buddy!
+	"Construction Worker": I didn't realize you were a local. You must be that new cleanup crew we brought on, right?
+- I've got a permit
+	"Construction Worker": Ahhh, you're that new local company we hired, huh?
+update "Construction Worker" right [mirrored="true" move_time="0.6"]
+"Construction Worker": Put ya hazards on and come in!
+- Let me look around
+- Let's get straight to work
