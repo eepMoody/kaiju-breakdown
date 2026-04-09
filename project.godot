@@ -15,18 +15,51 @@ compatibility/default_parent_skeleton_in_mesh_instance_3d=true
 [application]
 
 config/name="Kaiju Breakdown"
-run/main_scene="res://overworld/overworld_prototype.tscn"
+run/main_scene="uid://caymnswjmg5hl"
 config/features=PackedStringArray("4.6", "Forward Plus")
 run/max_fps=60
 config/icon="res://icon.svg"
+
+[autoload]
+
+Dialogic="*uid://ds2q0uclmolvu"
+
+[dialogic]
+
+directories/dch_directory={
+"Construction Worker": "res://dialogic/characters/Construction Worker.dch"
+}
+directories/dtl_directory={
+"intro": "res://dialogic/timelines/intro.dtl",
+"main": "res://dialogic/timelines/main.dtl"
+}
+layout/style_directory={
+"": "res://dialogic/styles/visual-novel.tres",
+"visual-novel": "res://dialogic/styles/visual-novel.tres"
+}
+layout/style_list=["res://dialogic/styles/visual-novel.tres"]
+layout/default_style="res://dialogic/styles/visual-novel.tres"
+variables={}
+glossary/default_case_sensitive=true
 
 [display]
 
 window/size/initial_screen=1
 window/size/always_on_top=true
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/dialogic/plugin.cfg")
+
 [input]
 
+dialogic_default_action={
+"deadzone": 0.2,
+"events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":4194309,"key_label":0,"unicode":0,"location":0,"echo":false,"script":null)
+, Object(InputEventMouseButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"button_mask":1,"position":Vector2(0, 0),"global_position":Vector2(0, 0),"factor":1.0,"button_index":1,"canceled":false,"pressed":true,"double_click":false,"script":null)
+, Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":32,"key_label":0,"unicode":32,"location":0,"echo":false,"script":null)
+]
+}
 move_up={
 "deadzone": 0.5,
 "events": [Object(InputEventKey,"resource_local_to_scene":false,"resource_name":"","device":-1,"window_id":0,"alt_pressed":false,"shift_pressed":false,"ctrl_pressed":false,"meta_pressed":false,"pressed":false,"keycode":0,"physical_keycode":87,"key_label":0,"unicode":119,"location":0,"echo":false,"script":null)

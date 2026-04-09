@@ -1,0 +1,6 @@
+join guide center
+guide (default): Are you ready to begin?
+- Yes
+	guide (default): Good. The mission awaits.
+- No
+	guide (default): Come back when you are prepared.

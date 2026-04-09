@@ -1,18 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://b6i2s63ev87vl"]
+[gd_scene format=3 uid="uid://b6i2s63ev87vl"]
 
+[ext_resource type="Script" uid="uid://vecfy6oivw7m" path="res://overworld/overworld_prototype.gd" id="1_nsvpm"]
 [ext_resource type="Texture2D" uid="uid://br3ojoqxjxq2s" path="res://overworld/sprites/ground.png" id="1_uv0ws"]
 [ext_resource type="PackedScene" uid="uid://c7atc07n4dk6r" path="res://overworld/dead_kaiju.tscn" id="3_dpmfx"]
 [ext_resource type="PackedScene" uid="uid://bmeuydq3hpwr5" path="res://overworld/player.tscn" id="3_player"]
 
-[node name="OverworldPrototype" type="Node2D"]
+[node name="OverworldPrototype" type="Node2D" unique_id=249466633]
+script = ExtResource("1_nsvpm")
 
-[node name="Ground" type="Sprite2D" parent="."]
+[node name="Ground" type="Sprite2D" parent="." unique_id=1822584201]
 position = Vector2(1888.0001, 1856.0001)
 scale = Vector2(1.3717296, 1.7984496)
 texture = ExtResource("1_uv0ws")
 
-[node name="Player" parent="." instance=ExtResource("3_player")]
+[node name="Player" parent="." unique_id=784586272 instance=ExtResource("3_player")]
 position = Vector2(2122, 2380)
 
-[node name="DeadKaiju" parent="." instance=ExtResource("3_dpmfx")]
+[node name="DeadKaiju" parent="." unique_id=960830915 instance=ExtResource("3_dpmfx")]
 position = Vector2(1856, 1027)

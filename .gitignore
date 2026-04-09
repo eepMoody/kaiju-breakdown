@@ -6,4 +6,4 @@
 addons/dialogic/
 
 # Mac OS specific ignores
-.DS_Store/
+.DS_Store
