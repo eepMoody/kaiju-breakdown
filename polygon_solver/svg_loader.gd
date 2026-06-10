@@ -10,7 +10,6 @@ func _ready():
 	var paper_polygon = load_svg_as_polygon2d("res://polygon_solver/textures/paw-vector.svg")
 
 	target_parent.call_deferred("add_child", paper_polygon)
-
 	polygon_solver.call_deferred("reset_targets")
 
 func load_svg_as_polygon2d(path: String) -> Polygon2D:
@@ -26,23 +25,14 @@ func load_svg_as_polygon2d(path: String) -> Polygon2D:
 
 				if node_id == "outline":
 					var d = parser.get_named_attribute_value("d")
+					var points = parse_path_into_points(d)
 
-					polygon.polygon = parse_path_into_points(d)
-
-					print(polygon.polygon.size())
-
-					polygon.polygon = godot_polygon_slice_plugin.ramer_douglas_peucker(polygon.polygon, 200)
-
-					if Geometry2D.is_polygon_clockwise(polygon.polygon):
-						print("clockwise")
-					else:
-						print("not clockwise")
-
-					print(polygon.polygon.size())
-
-	# polygon.texture = texture
-	polygon.color = Color.WHITE
-	polygon.scale = Vector2.ONE * 0.25
+					points = godot_polygon_slice_plugin.ramer_douglas_peucker(points, 200)
+					polygon.polygon = points
+					polygon.uv = points
+					polygon.texture = texture
+					polygon.color = Color.WHITE
+					polygon.scale = Vector2.ONE * 0.25
 
 	return polygon
 

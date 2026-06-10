@@ -2,8 +2,6 @@ extends Node2D
 
 class_name PolygonSolver
 
-class_name PolygonSolver
-
 enum State {
   SLICING,
   GRABBING
@@ -27,15 +25,12 @@ func _ready() -> void:
 	temp_line = Line2D.new()
 	temp_line.width = 20
 	temp_line.default_color = Color.RED
-	temp_line.default_color = Color.RED
 	temp_line.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
 	get_parent().call_deferred("add_child", temp_line)
 
-	# Clean up null entries the editor sometimes leaves behind
 	reset_targets()
 
 func reset_targets() -> void:
-	print("reset targets")
 	clean_targets()
 	for child in get_children():
 		if child is Polygon2D:
@@ -43,8 +38,6 @@ func reset_targets() -> void:
 
 	for target in targets:
 		target.set_script(pick_up_script)
-
-	print(targets.size())
 
 func clean_targets() -> void:
 	targets = targets.filter(func(t): return t != null)
@@ -75,14 +68,12 @@ func _process(delta: float) -> void:
 			target.set_process_input(true)
 
 	if current_state == State.SLICING:
-		handle_slicing_input(delta)
+		handle_slicing(delta)
 	elif current_state == State.GRABBING:
-		pass
+		handle_grabbing()
 
-func handle_slicing_input(delta: float) -> void:
+func handle_slicing(_delta: float) -> void:
 	var input_position = get_global_mouse_position()
-
-	next_tick -= delta
 
 	if Input.is_action_just_pressed("Click"):
 		is_pressed = true
@@ -92,23 +83,7 @@ func handle_slicing_input(delta: float) -> void:
 
 	if Input.is_action_just_released("Click"):
 		is_pressed = false
-
 		handle_slicing_end(godot_polygon_slice_plugin.ramer_douglas_peucker(temp_line.points, 10))
-
-		var polyline = godot_polygon_slice_plugin.create_polyline(
-			godot_polygon_slice_plugin.ramer_douglas_peucker(temp_line.points, 10)
-		, 20)
-
-		var matched_targets = godot_polygon_slice_plugin.find_polygon_matches(targets, polyline)
-		var polygons = godot_polygon_slice_plugin.slice_polygons_with_polyline(matched_targets, polyline)
-
-		for polygon in polygons:
-			add_child(polygon)
-			targets.push_back(polygon)
-
-		for matched_target in matched_targets:
-			matched_target.queue_free()
-			targets.erase(matched_target)
 
 	if is_pressed:
 		temp_line.add_point(input_position)
@@ -122,7 +97,7 @@ func find_target_matches(points: PackedVector2Array) -> Array[Polygon2D]:
 	var matches: Array[Polygon2D]
 
 	for target in targets:
-		if (Geometry2D.intersect_polyline_with_polygon(points, target.polygon)):
+		if Geometry2D.intersect_polyline_with_polygon(points, target.global_transform * target.polygon):
 			matches.push_back(target)
 
 	return matches
@@ -130,9 +105,7 @@ func find_target_matches(points: PackedVector2Array) -> Array[Polygon2D]:
 func handle_slicing_end(points: PackedVector2Array) -> void:
 	var matched_targets = find_target_matches(points)
 
-	var polyline = Polygon2D.new()
-
-	polyline.polygon = godot_polygon_slice_plugin.create_polyline(points, 20)
+	var polyline = godot_polygon_slice_plugin.create_polyline(points, 20)
 
 	for matched_target in matched_targets:
 		var sliced_polygons = Geometry2D.clip_polygons(
@@ -172,7 +145,6 @@ func handle_slicing_end(points: PackedVector2Array) -> void:
 			polygon.color = matched_target.color
 
 			rigidbody.add_child(polygon)
-
 			add_child(rigidbody)
 			targets.push_back(polygon)
 
