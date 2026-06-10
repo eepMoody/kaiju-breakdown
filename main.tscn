@@ -1,20 +1,20 @@
-[gd_scene load_steps=4 format=3 uid="uid://caymnswjmg5hl"]
+[gd_scene format=3 uid="uid://caymnswjmg5hl"]
 
 [ext_resource type="Texture2D" uid="uid://dd4sltn256oin" path="res://assets/title_logo.svg" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://bm3en7dlhsk7b" path="res://main.gd" id="1_h2yge"]
 [ext_resource type="Texture2D" uid="uid://1dkqmcerm7af" path="res://assets/press_any.svg" id="2_h2yge"]
 
-[node name="Main" type="Node2D"]
+[node name="Main" type="Node2D" unique_id=897250136]
 script = ExtResource("1_h2yge")
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="Camera2D" type="Camera2D" parent="." unique_id=737513413]
 
-[node name="TitleLogo" type="Sprite2D" parent="."]
+[node name="TitleLogo" type="Sprite2D" parent="." unique_id=433210611]
 position = Vector2(0.7569885, -46)
 scale = Vector2(0.6188579, 0.61885786)
 texture = ExtResource("1_0xm2m")
 
-[node name="PressAny" type="Sprite2D" parent="."]
+[node name="PressAny" type="Sprite2D" parent="." unique_id=802095038]
 position = Vector2(1.1666565, 212.50002)
 scale = Vector2(0.5555556, 0.5555556)
 texture = ExtResource("2_h2yge")

@@ -2,6 +2,8 @@ extends Node2D
 
 class_name PolygonSolver
 
+class_name PolygonSolver
+
 enum State {
   SLICING,
   GRABBING
@@ -21,11 +23,10 @@ var particles = preload("res://gravity_demo/cpu_particles_2d.tscn")
 
 @export var current_state_label: Label
 
-var next_tick: float
-
 func _ready() -> void:
 	temp_line = Line2D.new()
 	temp_line.width = 20
+	temp_line.default_color = Color.RED
 	temp_line.default_color = Color.RED
 	temp_line.z_index = RenderingServer.CANVAS_ITEM_Z_MAX
 	get_parent().call_deferred("add_child", temp_line)
@@ -74,11 +75,11 @@ func _process(delta: float) -> void:
 			target.set_process_input(true)
 
 	if current_state == State.SLICING:
-		handle_slicing(delta)
+		handle_slicing_input(delta)
 	elif current_state == State.GRABBING:
-		handle_grabbing()
+		pass
 
-func handle_slicing(delta: float) -> void:
+func handle_slicing_input(delta: float) -> void:
 	var input_position = get_global_mouse_position()
 
 	next_tick -= delta
@@ -93,6 +94,21 @@ func handle_slicing(delta: float) -> void:
 		is_pressed = false
 
 		handle_slicing_end(godot_polygon_slice_plugin.ramer_douglas_peucker(temp_line.points, 10))
+
+		var polyline = godot_polygon_slice_plugin.create_polyline(
+			godot_polygon_slice_plugin.ramer_douglas_peucker(temp_line.points, 10)
+		, 20)
+
+		var matched_targets = godot_polygon_slice_plugin.find_polygon_matches(targets, polyline)
+		var polygons = godot_polygon_slice_plugin.slice_polygons_with_polyline(matched_targets, polyline)
+
+		for polygon in polygons:
+			add_child(polygon)
+			targets.push_back(polygon)
+
+		for matched_target in matched_targets:
+			matched_target.queue_free()
+			targets.erase(matched_target)
 
 	if is_pressed:
 		temp_line.add_point(input_position)
