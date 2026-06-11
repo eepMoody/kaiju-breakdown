@@ -10,8 +10,9 @@
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2(545, 294)
 
-[node name="Loader" type="Node2D" parent="." node_paths=PackedStringArray("target_parent", "polygon_solver")]
+[node name="Loader" type="Node" parent="." node_paths=PackedStringArray("target_parent", "polygon_solver")]
 script = ExtResource("1_etqkj")
+svg_path = "res://polygon_solver/textures/paw-vector.svg"
 texture = ExtResource("2_iijpf")
 target_parent = NodePath("../Slicer")
 polygon_solver = NodePath("../Slicer")

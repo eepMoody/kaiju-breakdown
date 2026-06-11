@@ -10,11 +10,15 @@ var minigame_instance: Node = null
 func _ready() -> void:
 	modal_control.visible = false
 
-func show_modal(minigame_scene: PackedScene) -> void:
+func show_modal(minigame_scene: PackedScene, interact_area: InteractableArea = null) -> void:
 	if minigame_instance:
 		minigame_instance.queue_free()
 
 	minigame_instance = minigame_scene.instantiate()
+
+	if interact_area and minigame_instance.has_method("configure_from_area"):
+		minigame_instance.configure_from_area(interact_area)
+
 	viewport.add_child(minigame_instance)
 
 	if minigame_instance.has_signal("minigame_completed"):

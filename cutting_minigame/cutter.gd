@@ -117,25 +117,18 @@ func _perform_slice() -> void:
 	var polyline = godot_polygon_slice_plugin.create_polyline(extended_points, CuttingConfig.BLADE_WIDTH)
 
 	var matched_targets = godot_polygon_slice_plugin.find_polygon_matches(targets, polyline)
-	var sliced_polygons = godot_polygon_slice_plugin.slice_polygons_with_polyline(matched_targets, polyline)
+	if matched_targets.is_empty():
+		return
 
-	if sliced_polygons.is_empty():
+	var parent_node = get_parent() as Node2D
+	if parent_node == null:
+		return
+
+	if not Utilities.spawn_sliced_fragments(parent_node, matched_targets, polyline, targets):
 		return
 
 	_spawn_slice_particles()
 	slice_impact.emit()
-
-	for polygon in sliced_polygons:
-		get_parent().add_child(polygon)
-		targets.push_back(polygon)
-
-	for matched_target in matched_targets:
-		var parent_rigidbody = matched_target.get_parent()
-		if parent_rigidbody is RigidBody2D:
-			parent_rigidbody.queue_free()
-		else:
-			matched_target.queue_free()
-		targets.erase(matched_target)
 
 func get_current_position() -> Vector2:
 	return current_position

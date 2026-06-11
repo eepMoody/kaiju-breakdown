@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://c7atc07n4dk6r"]
+[gd_scene load_steps=9 format=3 uid="uid://c7atc07n4dk6r"]
 
 [ext_resource type="Script" uid="uid://dfvbntt3kivaq" path="res://overworld/dead_kaiju.gd" id="1_3hp8j"]
 [ext_resource type="Texture2D" uid="uid://d2kbs55wjuvth" path="res://overworld/sprites/KaijuBg.png" id="1_4nr2b"]
 [ext_resource type="PackedScene" uid="uid://fvu8618gygwg" path="res://overworld/interactable_area.tscn" id="3_3hp8j"]
 [ext_resource type="PackedScene" uid="uid://brg0p7cbfvmbn" path="res://polygon_solver/polygon_solver.tscn" id="4_polygon"]
+[ext_resource type="Texture2D" uid="uid://rxuk6a5e1msr" path="res://polygon_solver/textures/paw-vector.png" id="5_pawtex"]
 
 [sub_resource type="Curve2D" id="Curve2D_3hp8j"]
 resource_local_to_scene = true
@@ -39,6 +40,8 @@ polygon = PackedVector2Array(-417, -88, -247, -94, -66, -158, 71, -233, 144, -24
 
 [node name="PawInteraction" parent="." instance=ExtResource("3_3hp8j")]
 interaction_scene = ExtResource("4_polygon")
+part_svg_path = "res://polygon_solver/textures/paw-vector.svg"
+part_texture = ExtResource("5_pawtex")
 
 [node name="HighlightPath" parent="PawInteraction" index="0"]
 curve = SubResource("Curve2D_3hp8j")

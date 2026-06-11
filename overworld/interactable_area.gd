@@ -4,6 +4,8 @@ extends Area2D
 signal interacted(area: InteractableArea)
 
 @export var part_id: String = ""
+@export var part_svg_path: String = ""
+@export var part_texture: Texture2D
 @export var interaction_scene: PackedScene
 @export_group("Highlight")
 @export var highlight_color: Color = Color.YELLOW

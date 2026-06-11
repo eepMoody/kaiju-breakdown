@@ -29,3 +29,6 @@ const ARC_LINE_COLOR: Color = Color(1, 1, 1, 0.7)
 
 const DIRECTION_LINE_WIDTH: float = 1.0
 const DIRECTION_LINE_COLOR: Color = Color(1, 1, 1, 0.9)
+
+const HARVESTABLE_AREA_THRESHOLD: float = 50.0
+const HARVESTABLE_HIGHLIGHT: Color = Color(0.55, 1.0, 0.65, 1.0)

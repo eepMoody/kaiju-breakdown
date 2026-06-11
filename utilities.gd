@@ -77,3 +77,73 @@ static func barycentric_interpolate_uv(point: Vector2, vertices: PackedVector2Ar
 		return weighted_uv / total_weight
 
 	return uvs[0]
+
+static func spawn_sliced_fragments(
+	parent: Node2D,
+	matched_targets: Array[Polygon2D],
+	polyline: Polygon2D,
+	targets: Array[Polygon2D]
+) -> bool:
+	var spawned_any := false
+
+	for matched_target in matched_targets:
+		var sliced_polygons = Geometry2D.clip_polygons(
+			matched_target.global_transform * matched_target.polygon,
+			polyline.global_transform * polyline.polygon
+		)
+
+		var original_world_verts = matched_target.global_transform * matched_target.polygon
+		var original_uvs = matched_target.uv
+
+		for world_polygon in sliced_polygons:
+			spawned_any = true
+
+			var centroid := Vector2.ZERO
+			for vertex in world_polygon:
+				centroid += vertex
+			centroid /= world_polygon.size()
+
+			var rigidbody = RigidBody2D.new()
+			rigidbody.position = parent.to_local(centroid)
+
+			var local_polygon := PackedVector2Array()
+			for vertex in world_polygon:
+				local_polygon.append(parent.to_local(vertex) - rigidbody.position)
+
+			var polygon = Polygon2D.new()
+			polygon.polygon = local_polygon
+
+			var surface_area = godot_polygon_slice_plugin.get_polygon_area(local_polygon) / 1000.0
+			var is_harvestable = surface_area < CuttingConfig.HARVESTABLE_AREA_THRESHOLD
+
+			if is_harvestable:
+				var collider = CollisionPolygon2D.new()
+				collider.polygon = local_polygon
+				polygon.add_child(collider)
+				rigidbody.freeze = false
+				polygon.modulate = CuttingConfig.HARVESTABLE_HIGHLIGHT
+			else:
+				rigidbody.freeze = true
+
+			if matched_target.texture and original_uvs.size() >= 3:
+				polygon.uv = interpolate_uvs_for_sliced_polygon(
+					world_polygon,
+					original_world_verts,
+					original_uvs
+				)
+
+			polygon.texture = matched_target.texture
+			polygon.color = matched_target.color
+
+			rigidbody.add_child(polygon)
+			parent.add_child(rigidbody)
+			targets.push_back(polygon)
+
+		var parent_rigidbody = matched_target.get_parent()
+		if parent_rigidbody is RigidBody2D:
+			parent_rigidbody.queue_free()
+		else:
+			matched_target.queue_free()
+		targets.erase(matched_target)
+
+	return spawned_any

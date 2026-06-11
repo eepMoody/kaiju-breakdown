@@ -27,7 +27,7 @@ func _notify_interaction(area: InteractableArea) -> void:
 		modal_container.modal_closed.connect(_on_modal_closed)
 		get_tree().root.add_child(modal_container)
 
-	modal_container.show_modal(cutting_minigame_scene)
+	modal_container.show_modal(cutting_minigame_scene, area)
 
 func _on_modal_closed() -> void:
 	pass

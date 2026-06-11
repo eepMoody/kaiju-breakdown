@@ -1,18 +1,20 @@
+class_name SvgLoader
 extends Node
 
+@export var svg_path: String = "res://polygon_solver/textures/paw-vector.svg"
 @export var texture: Texture2D
-
 @export var target_parent: Node
-
 @export var polygon_solver: PolygonSolver
 
-func _ready():
-	var paper_polygon = load_svg_as_polygon2d("res://polygon_solver/textures/paw-vector.svg")
+func _ready() -> void:
+	if svg_path.is_empty() or texture == null:
+		return
 
-	target_parent.call_deferred("add_child", paper_polygon)
+	var polygon = load_polygon(svg_path, texture)
+	target_parent.call_deferred("add_child", polygon)
 	polygon_solver.call_deferred("reset_targets")
 
-func load_svg_as_polygon2d(path: String) -> Polygon2D:
+static func load_polygon(path: String, part_texture: Texture2D, scale: float = 0.25) -> Polygon2D:
 	var polygon = Polygon2D.new()
 
 	var parser = XMLParser.new()
@@ -30,13 +32,13 @@ func load_svg_as_polygon2d(path: String) -> Polygon2D:
 					points = godot_polygon_slice_plugin.ramer_douglas_peucker(points, 200)
 					polygon.polygon = points
 					polygon.uv = points
-					polygon.texture = texture
+					polygon.texture = part_texture
 					polygon.color = Color.WHITE
-					polygon.scale = Vector2.ONE * 0.25
+					polygon.scale = Vector2.ONE * scale
 
 	return polygon
 
-func parse_path_into_points(path_data: String) -> PackedVector2Array:
+static func parse_path_into_points(path_data: String) -> PackedVector2Array:
 	var points: PackedVector2Array = []
 	var cursor = Vector2.ZERO
 
@@ -80,3 +82,17 @@ func parse_path_into_points(path_data: String) -> PackedVector2Array:
 				cursor = dest
 
 	return points
+
+static func center_polygon(polygon: Polygon2D) -> void:
+	if polygon.polygon.is_empty():
+		return
+
+	var min_vertex = polygon.polygon[0]
+	var max_vertex = polygon.polygon[0]
+
+	for vertex in polygon.polygon:
+		min_vertex = min_vertex.min(vertex)
+		max_vertex = max_vertex.max(vertex)
+
+	var local_center = (min_vertex + max_vertex) / 2.0
+	polygon.position = -local_center * polygon.scale

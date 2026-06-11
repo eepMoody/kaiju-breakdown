@@ -21,27 +21,20 @@ var direction_preview_line: Line2D
 var arc_display: Node2D
 var cutter: Node2D
 
-@export var kaiju_part_texture: Texture2D
-@export var kaiju_part_polygon: PackedVector2Array
-
 var part_polygon: Polygon2D
-var background: ColorRect
 
+var _part_svg_path: String = ""
+var _part_texture: Texture2D
 var _slice_shake: float = 0.0
 
 @onready var camera: Camera2D = $Camera2D
 
-func _ready() -> void:
-	part_polygon = Polygon2D.new()
-	if kaiju_part_polygon.size() > 0:
-		part_polygon.polygon = kaiju_part_polygon
-	else:
-		part_polygon.polygon = PackedVector2Array([
-			Vector2(-200, -200), Vector2(200, -200),
-			Vector2(200, 200), Vector2(-200, 200)
-		])
+func configure_from_area(area: InteractableArea) -> void:
+	_part_svg_path = area.part_svg_path
+	_part_texture = area.part_texture
 
-	part_polygon.color = Color(0.6, 0.3, 0.3)
+func _ready() -> void:
+	part_polygon = _create_part_polygon()
 	part_polygon.z_index = CuttingConfig.KAIJU_Z_INDEX
 	add_child(part_polygon)
 
@@ -62,6 +55,20 @@ func _ready() -> void:
 	cutter.set_script(cutter_script)
 	add_child(cutter)
 	cutter.slice_impact.connect(_on_cutter_slice_impact)
+
+func _create_part_polygon() -> Polygon2D:
+	if _part_svg_path != "" and _part_texture:
+		var polygon = SvgLoader.load_polygon(_part_svg_path, _part_texture)
+		SvgLoader.center_polygon(polygon)
+		return polygon
+
+	var polygon = Polygon2D.new()
+	polygon.polygon = PackedVector2Array([
+		Vector2(-200, -200), Vector2(200, -200),
+		Vector2(200, 200), Vector2(-200, 200)
+	])
+	polygon.color = Color(0.6, 0.3, 0.3)
+	return polygon
 
 func _process(delta: float) -> void:
 	_slice_shake = move_toward(_slice_shake, 0.0, delta * CuttingConfig.SLICE_SHAKE_DECAY)

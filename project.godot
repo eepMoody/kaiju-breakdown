@@ -44,6 +44,8 @@ glossary/default_case_sensitive=true
 
 [display]
 
+window/size/viewport_width=1920
+window/size/viewport_height=1280
 window/size/initial_screen=1
 window/size/always_on_top=true
 
