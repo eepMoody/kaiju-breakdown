@@ -13,18 +13,16 @@ public static class HarvestFragmentSpawner
     {
 
         var uvs = new Vector2[slicedVertices.Length];
-        if (TryFitAffine(originalWorldVertices, originalUvs,
-                out float au, out float bu, out float cu, out float av, out float bv, out float cv))
+        if (TryBuildPositionToUvTransform(originalWorldVertices, originalUvs, out Transform2D positionToUv))
         {
             for (int i = 0; i < slicedVertices.Length; i++)
             {
-                Vector2 p = slicedVertices[i];
-                uvs[i] = new Vector2((au * p.X) + (bu * p.Y) + cu, (av * p.X) + (bv * p.Y) + cv);
+                uvs[i] = positionToUv * slicedVertices[i];
             }
             return uvs;
         }
 
-        // Degenerate (collinear) source: copy the nearest vertex's uv.
+        // No triangle could be built (collinear source); fall back to nearest vertex's uv.
         for (int i = 0; i < slicedVertices.Length; i++)
         {
             int nearest = 0;
@@ -43,53 +41,78 @@ public static class HarvestFragmentSpawner
         return uvs;
     }
 
-    // Least-squares fit of uv = (a*x + b*y + c) per channel over the source vertices.
-    private static bool TryFitAffine(Vector2[] pos, Vector2[] uv,
-        out float au, out float bu, out float cu, out float av, out float bv, out float cv)
+    // A flat textured polygon's uv is an affine function of position, so position->uv is
+    // a Transform2D defined exactly by any three non-collinear vertices.
+    private static bool TryBuildPositionToUvTransform(
+        Vector2[] pos, Vector2[] uv, out Transform2D positionToUv)
     {
-        au = bu = cu = av = bv = cv = 0f;
+        positionToUv = Transform2D.Identity;
         if (pos.Length < 3)
         {
             return false;
         }
 
-        double sxx = 0, sxy = 0, sx = 0, syy = 0, sy = 0, n = pos.Length;
-        double sxu = 0, syu = 0, su = 0, sxv = 0, syv = 0, sv = 0;
-        for (int i = 0; i < pos.Length; i++)
-        {
-            double x = pos[i].X, y = pos[i].Y, u = uv[i].X, v = uv[i].Y;
-            sxx += x * x; sxy += x * y; sx += x; syy += y * y; sy += y;
-            sxu += x * u; syu += y * u; su += u; sxv += x * v; syv += y * v; sv += v;
-        }
-
-        if (!Solve3(sxx, sxy, sx, sxy, syy, sy, sx, sy, n, sxu, syu, su, out double a1, out double b1, out double c1) ||
-            !Solve3(sxx, sxy, sx, sxy, syy, sy, sx, sy, n, sxv, syv, sv, out double a2, out double b2, out double c2))
+        // Avoid using sliver triangles that would throw off the uv mapping
+        int i0 = 0;
+        int i1 = FarthestFrom(pos, i0);
+        int i2 = FarthestFromLine(pos, i0, i1);
+        if (i1 < 0 || i2 < 0)
         {
             return false;
         }
 
-        au = (float)a1; bu = (float)b1; cu = (float)c1;
-        av = (float)a2; bv = (float)b2; cv = (float)c2;
+        // Map the corners of the unit square to the triangle
+        var srcTriangle = new Transform2D(pos[i1] - pos[i0], pos[i2] - pos[i0], pos[i0]);
+        var uvTriangle = new Transform2D(uv[i1] - uv[i0], uv[i2] - uv[i0], uv[i0]);
+        positionToUv = uvTriangle * srcTriangle.AffineInverse();
         return true;
     }
 
-    private static bool Solve3(
-        double a11, double a12, double a13, double a21, double a22, double a23,
-        double a31, double a32, double a33, double r1, double r2, double r3,
-        out double x, out double y, out double z)
+    private static int FarthestFrom(Vector2[] pos, int anchor)
     {
-        double det = (a11 * ((a22 * a33) - (a23 * a32)))
-            - (a12 * ((a21 * a33) - (a23 * a31)))
-            + (a13 * ((a21 * a32) - (a22 * a31)));
-        x = y = z = 0;
-        if (Mathf.Abs((float)det) < 1e-6f)
+        int best = -1;
+        float bestDist = 1e-6f;
+        for (int i = 0; i < pos.Length; i++)
         {
-            return false;
+            if (i == anchor)
+            {
+                continue;
+            }
+            float d = pos[i].DistanceSquaredTo(pos[anchor]);
+            if (d > bestDist)
+            {
+                bestDist = d;
+                best = i;
+            }
         }
-        x = ((r1 * ((a22 * a33) - (a23 * a32))) - (a12 * ((r2 * a33) - (a23 * r3))) + (a13 * ((r2 * a32) - (a22 * r3)))) / det;
-        y = ((a11 * ((r2 * a33) - (a23 * r3))) - (r1 * ((a21 * a33) - (a23 * a31))) + (a13 * ((a21 * r3) - (r2 * a31)))) / det;
-        z = ((a11 * ((a22 * r3) - (r2 * a32))) - (a12 * ((a21 * r3) - (r2 * a31))) + (r1 * ((a21 * a32) - (a22 * a31)))) / det;
-        return true;
+        return best;
+    }
+
+    // Find the best triangle that is not collinear with the line a-b
+    private static int FarthestFromLine(Vector2[] pos, int a, int b)
+    {
+        if (a < 0 || b < 0)
+        {
+            return -1;
+        }
+
+        Vector2 edge = pos[b] - pos[a];
+        int best = -1;
+        float bestArea = 1e-6f;
+        for (int i = 0; i < pos.Length; i++)
+        {
+            if (i == a || i == b)
+            {
+                continue;
+            }
+            float area = Mathf.Abs(edge.Cross(pos[i] - pos[a]));
+            if (area > bestArea)
+            {
+                bestArea = area;
+                best = i;
+            }
+        }
+        return best;
     }
 
     public static bool SpawnSlicedFragments(

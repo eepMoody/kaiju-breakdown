@@ -12,6 +12,8 @@ title: Main
 ---
 // Ported from dialogic/timelines/main.dtl (Construction Worker, the overworld entry beat).
 Construction Worker: Hey, you can't park there!
+-> [Skip to overworld]
+    <<stop>>
 -> Fuck you, buddy
     Construction Worker: Fuck you too, buddy!
     Construction Worker: I didn't realize you were a local. You must be that new cleanup crew we brought on, right?
