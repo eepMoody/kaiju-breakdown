@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Godot;
 
@@ -5,10 +6,32 @@ namespace KaijuBreakdown.Core;
 
 public static class PolygonSlicePlugin
 {
+    private const string PluginClass = "godot_polygon_slice_plugin";
+
     private static GodotObject? _plugin;
 
-    private static GodotObject Singleton =>
-        _plugin ??= ClassDB.Instantiate("godot_polygon_slice_plugin").AsGodotObject();
+    private static GodotObject Singleton
+    {
+        get
+        {
+            if (_plugin != null)
+            {
+                return _plugin;
+            }
+
+            if (!ClassDB.ClassExists(PluginClass))
+            {
+                string message =
+                    $"GDExtension class '{PluginClass}' is not loaded. The GodotPolygonSlicePlugin " +
+                    "addon is missing or has no native library for this platform.";
+                GD.PushError(message);
+                throw new InvalidOperationException(message);
+            }
+
+            _plugin = ClassDB.Instantiate(PluginClass).AsGodotObject();
+            return _plugin;
+        }
+    }
 
     public static Vector2[] RamerDouglasPeucker(Vector2[] points, int epsilon) =>
         Singleton.Call("ramer_douglas_peucker", points, epsilon).AsVector2Array();

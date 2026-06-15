@@ -11,7 +11,7 @@ public static class HarvestFragmentSpawner
         Vector2[] originalWorldVertices,
         Vector2[] originalUvs)
     {
-        
+
         var uvs = new Vector2[slicedVertices.Length];
         if (TryFitAffine(originalWorldVertices, originalUvs,
                 out float au, out float bu, out float cu, out float av, out float bv, out float cv))
