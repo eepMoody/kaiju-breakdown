@@ -2,8 +2,13 @@
 .godot/
 /android/
 
-# Managed addons (installed by ./setup.sh, see addons.cfg)
-addons/dialogic/
+# .NET / C# build output (restored by ./setup.sh via dotnet, see KaijuBreakdown.csproj)
+bin/
+obj/
+
+# Managed addons (installed by ./setup.sh, see addons.cfg), except the committed GDExtension.
+addons/*
+!addons/GodotPolygonSlicePlugin/
 
 # Mac OS specific ignores
 .DS_Store
