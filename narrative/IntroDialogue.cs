@@ -19,6 +19,7 @@ public partial class IntroDialogue : Control
     [Export] public bool GoToOverworldOnComplete { get; set; } = true;
 
     private DialogueRunner? _runner;
+    private bool _completed;
 
     public override void _Ready()
     {
@@ -57,10 +58,16 @@ public partial class IntroDialogue : Control
 
     private void OnDialogueComplete()
     {
+        if (_completed)
+        {
+            return;
+        }
+
+        _completed = true;
         GD.Print("IntroDialogue: dialogue complete.");
         if (GoToOverworldOnComplete)
         {
-            GetTree().ChangeSceneToFile(OverworldScene);
+            GetTree().CallDeferred(SceneTree.MethodName.ChangeSceneToFile, OverworldScene);
         }
     }
 }
