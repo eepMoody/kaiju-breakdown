@@ -1,4 +1,5 @@
 using Godot;
+using System.Collections.Generic;
 using KaijuBreakdown.Overworld;
 
 namespace KaijuBreakdown.Minigames.Cutting;
@@ -36,6 +37,15 @@ public partial class CuttingMinigame : Node2D
 
     private Camera2D _camera = null!;
 
+    private static readonly Texture2D CursorAvailable =
+        GD.Load<Texture2D>("res://assets/cursor-dot.png");
+    private static readonly Texture2D CursorBlocked =
+        GD.Load<Texture2D>("res://assets/cursor-x.png");
+    private static readonly Texture2D CursorTrigger =
+        GD.Load<Texture2D>("res://assets/cursor-trigger.png");
+
+    private SoftwareCursor _cursor = null!;
+
     // Invoked by name from ModalContainer via Call("ConfigureFromArea", ...).
     public void ConfigureFromArea(InteractableArea area)
     {
@@ -66,6 +76,9 @@ public partial class CuttingMinigame : Node2D
         _cutter = new Cutter();
         AddChild(_cutter);
         _cutter.SliceImpact += OnCutterSliceImpact;
+
+        _cursor = new SoftwareCursor { Texture = CursorAvailable };
+        AddChild(_cursor);
     }
 
     private Polygon2D CreatePartPolygon()
@@ -105,6 +118,8 @@ public partial class CuttingMinigame : Node2D
                 _camera.Offset = Vector2.Zero;
             }
         }
+
+        UpdateHoverCursor();
 
         if (_currentState == State.Dragging)
         {
@@ -166,11 +181,18 @@ public partial class CuttingMinigame : Node2D
         switch (_currentState)
         {
             case State.Idle:
-                _clickStartPosition = GetGlobalMousePosition();
-                _dragCurrentPosition = _clickStartPosition;
-                _directionPreviewLine.Visible = true;
-                _currentState = State.Dragging;
-                break;
+                {
+                    Vector2 start = GetGlobalMousePosition();
+                    if (IsPointInsideCuttable(start))
+                    {
+                        break;
+                    }
+                    _clickStartPosition = start;
+                    _dragCurrentPosition = _clickStartPosition;
+                    _directionPreviewLine.Visible = true;
+                    _currentState = State.Dragging;
+                    break;
+                }
 
             case State.Oscillating:
                 _lockedCutAngle = _arcDisplay.GetCurrentAngle();
@@ -207,6 +229,11 @@ public partial class CuttingMinigame : Node2D
                 {
                     Vector2 bladeCenter = _cutter.GetBladeCenterInParentSpace();
                     _cutter.StopCutting();
+                    if (IsBladeOutsideCuttable())
+                    {
+                        _currentState = State.Idle;
+                        break;
+                    }
                     _clickStartPosition = _cutter.GetCurrentPosition();
                     _baseDirectionAngle = _cutter.GetCurrentDirection();
                     _arcDisplay.StartOscillation(
@@ -224,6 +251,75 @@ public partial class CuttingMinigame : Node2D
     {
         _arcDisplay.StopOscillation();
         _currentState = State.Idle;
+    }
+
+    private void UpdateHoverCursor()
+    {
+        _cursor.Texture = _currentState switch
+        {
+            // Oscillating/Cutting/Paused all advance on a mouse press; prompt for it.
+            State.Oscillating or State.Cutting or State.Paused => CursorTrigger,
+            State.Idle when IsPointInsideCuttable(GetGlobalMousePosition()) => CursorBlocked,
+            _ => CursorAvailable,
+        };
+    }
+
+    private bool IsPointInsideCuttable(Vector2 globalPoint)
+    {
+        foreach (Polygon2D polygon in GetCuttablePolygons())
+        {
+            if (Geometry2D.IsPointInPolygon(globalPoint, ToGlobalPolygon(polygon)))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private bool IsBladeOutsideCuttable()
+    {
+        Vector2[] blade = _cutter.GetBladeFootprintGlobal();
+        foreach (Polygon2D polygon in GetCuttablePolygons())
+        {
+            if (Geometry2D.IntersectPolygons(blade, ToGlobalPolygon(polygon)).Count > 0)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private IEnumerable<Polygon2D> GetCuttablePolygons()
+    {
+        foreach (Node child in GetChildren())
+        {
+            if (child is Polygon2D polygon)
+            {
+                yield return polygon;
+            }
+            else if (child is RigidBody2D rigidbody)
+            {
+                foreach (Node rigidbodyChild in rigidbody.GetChildren())
+                {
+                    if (rigidbodyChild is Polygon2D rbPolygon)
+                    {
+                        yield return rbPolygon;
+                    }
+                }
+            }
+        }
+    }
+
+    private static Vector2[] ToGlobalPolygon(Polygon2D polygon)
+    {
+        Vector2[] points = polygon.Polygon;
+        Transform2D transform = polygon.GlobalTransform;
+        var result = new Vector2[points.Length];
+        for (int i = 0; i < points.Length; i++)
+        {
+            result[i] = transform * points[i];
+        }
+        return result;
     }
 
     private void OnCutterSliceImpact()

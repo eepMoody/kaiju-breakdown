@@ -214,6 +214,31 @@ public partial class Cutter : Node2D
                 * ((CuttingConfig.BladeLength / 2.0f) - pivotOffset));
     }
 
+    // Returns the blade's four corners in global space, used to check footprint
+    public Vector2[] GetBladeFootprintGlobal()
+    {
+        float pivotOffset = CuttingConfig.BladeWidth / 2.0f;
+        var forward = new Vector2(Mathf.Cos(_cutDirection), Mathf.Sin(_cutDirection));
+        var perpendicular = new Vector2(-forward.Y, forward.X);
+        Vector2 center = _currentPosition
+            + (forward * ((CuttingConfig.BladeLength / 2.0f) - pivotOffset));
+
+        float halfLength = CuttingConfig.BladeLength / 2.0f;
+        float halfWidth = CuttingConfig.BladeWidth / 2.0f;
+        var corners = new[]
+        {
+            center + (forward * halfLength) + (perpendicular * halfWidth),
+            center + (forward * halfLength) - (perpendicular * halfWidth),
+            center - (forward * halfLength) - (perpendicular * halfWidth),
+            center - (forward * halfLength) + (perpendicular * halfWidth),
+        };
+        for (int i = 0; i < corners.Length; i++)
+        {
+            corners[i] = ToGlobal(corners[i]);
+        }
+        return corners;
+    }
+
     private void SpawnSliceParticles()
     {
         Node parentNode = GetParent();
