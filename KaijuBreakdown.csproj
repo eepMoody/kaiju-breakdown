@@ -1,0 +1,30 @@
+<Project Sdk="Godot.NET.Sdk/4.6.0">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <!-- net7.0 should be used for projects targeting Windows on ARM. iOS/Android also require net8.0+. -->
+    <EnableDynamicLoading>true</EnableDynamicLoading>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>KaijuBreakdown</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Required Yarn Spinner import; pulls in YarnSpinner, its deps, and the source generator. -->
+  <Import Project="addons\YarnSpinner-Godot\YarnSpinner-Godot.props" />
+
+  <ItemGroup>
+    <PackageReference Include="Chickensoft.LogicBlocks" Version="6.1.0" />
+    <PackageReference Include="Chickensoft.LogicBlocks.DiagramGenerator" Version="6.1.0" PrivateAssets="all" OutputItemType="analyzer" />
+    <PackageReference Include="Chickensoft.SaveFileBuilder" Version="1.3.71" />
+    <PackageReference Include="Chickensoft.Serialization" Version="3.1.0" />
+    <!-- Chickensoft.AutoInject, if added, also needs Chickensoft.GodotNodeInterfaces (its source references INode/FakeNodeTree). -->
+    <PackageReference Include="Chickensoft.Introspection.Generator" Version="3.0.3" PrivateAssets="all" OutputItemType="analyzer" />
+    <!-- Update (not Include): bump the System.Text.Json the Yarn .props pins to 8.0.6, since Chickensoft.Serialization needs >= 9.0.7. -->
+    <PackageReference Update="System.Text.Json" Version="9.0.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- gdUnit4 (C#). Not runnable by `dotnet test` yet: the runner has no Godot 4.6-compatible release. -->
+    <PackageReference Include="gdUnit4.api" Version="5.0.0" />
+    <PackageReference Include="gdUnit4.test.adapter" Version="3.0.0" />
+  </ItemGroup>
+</Project>

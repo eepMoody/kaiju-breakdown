@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://fvu8618gygwg"]
 
-[ext_resource type="Script" uid="uid://duchwsy0ele4l" path="res://overworld/interactable_area.gd" id="1_717tg"]
-[ext_resource type="Script" uid="uid://vmaxio8a8svu" path="res://overworld/path_2d.gd" id="2_2b8yt"]
+[ext_resource type="Script" uid="uid://bf7rrgrokv8ud" path="res://overworld/InteractableArea.cs" id="1_717tg"]
+[ext_resource type="Script" uid="uid://255ygayk1ldw" path="res://overworld/OverworldPath2D.cs" id="2_2b8yt"]
 
 [sub_resource type="Curve2D" id="Curve2D_2b8yt"]
 resource_local_to_scene = true

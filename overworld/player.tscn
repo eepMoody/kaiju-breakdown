@@ -1,6 +1,6 @@
 [gd_scene load_steps=9 format=3 uid="uid://bmeuydq3hpwr5"]
 
-[ext_resource type="Script" uid="uid://dwau8j2fckfuy" path="res://overworld/player.gd" id="1_1c3vx"]
+[ext_resource type="Script" uid="uid://ck1f4imnp0e1g" path="res://overworld/Player.cs" id="1_1c3vx"]
 [ext_resource type="Texture2D" uid="uid://bcqwo1ff88a1f" path="res://overworld/sprites/MC Sprite 1.png" id="2_ks6t6"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ks6t6"]

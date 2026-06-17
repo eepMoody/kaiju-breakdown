@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://b6i2s63ev87vl"]
 
-[ext_resource type="Script" uid="uid://vecfy6oivw7m" path="res://overworld/overworld_prototype.gd" id="1_nsvpm"]
+[ext_resource type="Script" uid="uid://c5fc8xq6gmvjb" path="res://overworld/OverworldPrototype.cs" id="1_nsvpm"]
 [ext_resource type="Texture2D" uid="uid://br3ojoqxjxq2s" path="res://overworld/sprites/ground.png" id="1_uv0ws"]
 [ext_resource type="PackedScene" uid="uid://c7atc07n4dk6r" path="res://overworld/dead_kaiju.tscn" id="3_dpmfx"]
 [ext_resource type="PackedScene" uid="uid://bmeuydq3hpwr5" path="res://overworld/player.tscn" id="3_player"]
