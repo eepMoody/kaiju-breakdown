@@ -46,6 +46,8 @@ public partial class CuttingMinigame : Node2D
 
     private SoftwareCursor _cursor = null!;
 
+    private HarvestController _harvest = null!;
+
     // Invoked by name from ModalContainer via Call("ConfigureFromArea", ...).
     public void ConfigureFromArea(InteractableArea area)
     {
@@ -76,6 +78,9 @@ public partial class CuttingMinigame : Node2D
         _cutter = new Cutter();
         AddChild(_cutter);
         _cutter.SliceImpact += OnCutterSliceImpact;
+
+        _harvest = new HarvestController();
+        AddChild(_harvest);
 
         _cursor = new SoftwareCursor { Texture = CursorAvailable };
         // scale cursor to match camera zoom
@@ -185,6 +190,10 @@ public partial class CuttingMinigame : Node2D
             case State.Idle:
                 {
                     Vector2 start = GetGlobalMousePosition();
+                    if (TryHarvestAt(start))
+                    {
+                        break;
+                    }
                     if (IsPointInsideCuttable(start))
                     {
                         break;
@@ -259,17 +268,34 @@ public partial class CuttingMinigame : Node2D
     {
         _cursor.Texture = _currentState switch
         {
-            // Oscillating/Cutting/Paused all advance on a mouse press; prompt for it.
             State.Oscillating or State.Cutting or State.Paused => CursorTrigger,
             State.Idle when IsPointInsideCuttable(GetGlobalMousePosition()) => CursorBlocked,
             _ => CursorAvailable,
         };
     }
 
+    private bool TryHarvestAt(Vector2 globalPoint)
+    {
+        foreach (Polygon2D polygon in GetCuttablePolygons())
+        {
+            if (_harvest.IsHarvestable(polygon) &&
+                Geometry2D.IsPointInPolygon(globalPoint, ToGlobalPolygon(polygon)))
+            {
+                _harvest.Harvest(polygon);
+                return true;
+            }
+        }
+        return false;
+    }
+
     private bool IsPointInsideCuttable(Vector2 globalPoint)
     {
         foreach (Polygon2D polygon in GetCuttablePolygons())
         {
+            if (_harvest.IsHarvestable(polygon))
+            {
+                continue;
+            }
             if (Geometry2D.IsPointInPolygon(globalPoint, ToGlobalPolygon(polygon)))
             {
                 return true;

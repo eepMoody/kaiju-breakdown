@@ -34,6 +34,8 @@ public static class CuttingConfig
     public const float DirectionLineWidth = 1.0f;
     public static readonly Color DirectionLineColor = new(1, 1, 1, 0.9f);
 
-    public const float HarvestableAreaThreshold = 50.0f;
+    public const float HarvestMaxSize = 120.0f;   // side length (px) of the harvest-size square
+    public const float HarvestDuration = 0.0f;    // seconds to harvest; 0 = instant
+
     public static readonly Color HarvestableHighlight = new(0.55f, 1.0f, 0.65f, 1.0f);
 }

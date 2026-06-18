@@ -161,23 +161,7 @@ public static class HarvestFragmentSpawner
                     Polygon = localPolygon,
                 };
 
-                float surfaceArea = PolygonSlicePlugin.GetPolygonArea(localPolygon) / 1000.0f;
-                bool isHarvestable = surfaceArea < CuttingConfig.HarvestableAreaThreshold;
-
-                if (isHarvestable)
-                {
-                    var collider = new CollisionPolygon2D
-                    {
-                        Polygon = localPolygon,
-                    };
-                    polygon.AddChild(collider);
-                    rigidbody.Freeze = false;
-                    polygon.Modulate = CuttingConfig.HarvestableHighlight;
-                }
-                else
-                {
-                    rigidbody.Freeze = true;
-                }
+                rigidbody.Freeze = true;
 
                 if (matchedTarget.Texture != null && originalUvs.Length >= 3)
                 {
