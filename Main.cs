@@ -1,4 +1,8 @@
+using System;
 using Godot;
+using Chickensoft.LogicBlocks;
+using KaijuBreakdown.Menu;
+using KaijuBreakdown.Systems;
 
 namespace KaijuBreakdown;
 
@@ -6,46 +10,91 @@ public partial class Main : Node2D
 {
     private const string IntroScene = "res://narrative/IntroDialogue.tscn";
 
-    private Sprite2D _pressAny = null!;
+    private MenuLogic _logic = null!;
+    private LogicBlock.Binding _binding = null!;
 
-    private Tween? _floatTween;
-    private Tween? _fadeTween;
+    private Control _mainMenu = null!;
+    private Control _settingsMenu = null!;
+    private OptionButton _resolutionOption = null!;
+    private CheckButton _fullscreenCheck = null!;
 
     public override void _Ready()
     {
-        _pressAny = GetNode<Sprite2D>("PressAny");
-        StartAnimations();
+        _mainMenu = GetNode<Control>("MenuLayer/MainMenu");
+        _settingsMenu = GetNode<Control>("MenuLayer/SettingsMenu");
+        _resolutionOption = GetNode<OptionButton>("MenuLayer/SettingsMenu/Panel/Margin/VBox/ResRow/ResolutionOption");
+        _fullscreenCheck = GetNode<CheckButton>("MenuLayer/SettingsMenu/Panel/Margin/VBox/FullscreenCheck");
+
+        _logic = new MenuLogic();
+        _binding = _logic.Bind();
+        _binding
+            .OnState<MenuState.MainMenu>(_ => ShowSettings(false))
+            .OnState<MenuState.Settings>(_ => ShowSettings(true))
+            .OnOutput<MenuState.Output.StartGameRequested>(
+                (in MenuState.Output.StartGameRequested _) => GetTree().ChangeSceneToFile(IntroScene))
+            .OnOutput<MenuState.Output.QuitGameRequested>(
+                (in MenuState.Output.QuitGameRequested _) => GetTree().Quit());
+
+        GetNode<Button>("MenuLayer/MainMenu/Panel/Margin/VBox/StartButton").Pressed +=
+            () => _logic.Input(new MenuState.Input.StartGame());
+        GetNode<Button>("MenuLayer/MainMenu/Panel/Margin/VBox/SettingsButton").Pressed +=
+            () => _logic.Input(new MenuState.Input.OpenSettings());
+        GetNode<Button>("MenuLayer/MainMenu/Panel/Margin/VBox/QuitButton").Pressed +=
+            () => _logic.Input(new MenuState.Input.QuitGame());
+        GetNode<Button>("MenuLayer/SettingsMenu/Panel/Margin/VBox/ButtonRow/ApplyButton").Pressed += OnApplyPressed;
+        GetNode<Button>("MenuLayer/SettingsMenu/Panel/Margin/VBox/ButtonRow/BackButton").Pressed +=
+            () => _logic.Input(new MenuState.Input.CloseSettings());
+        _fullscreenCheck.Toggled += on => _resolutionOption.Disabled = on;
+
+        PopulateSettingsControls();
+        _logic.Start<MenuState.MainMenu>();
     }
 
-    private void StartAnimations()
+    public override void _ExitTree()
     {
-        Vector2 startPos = _pressAny.Position;
-
-        _floatTween = CreateTween();
-        _floatTween.SetLoops();
-        _floatTween.SetParallel(true);
-        _floatTween.TweenProperty(_pressAny, "position:y", startPos.Y - 10, 1.5)
-            .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Sine);
-        _floatTween.TweenProperty(_pressAny, "position:x", startPos.X + 5, 2.0)
-            .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Sine);
-
-        var modulate = _pressAny.Modulate;
-        modulate.A = 1.0f;
-        _pressAny.Modulate = modulate;
-
-        _fadeTween = CreateTween();
-        _fadeTween.SetLoops();
-        _fadeTween.TweenProperty(_pressAny, "modulate:a", 0.3, 1.0)
-            .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Sine);
-        _fadeTween.TweenProperty(_pressAny, "modulate:a", 1.0, 1.0)
-            .SetEase(Tween.EaseType.InOut).SetTrans(Tween.TransitionType.Sine);
+        _binding?.Dispose();
+        _logic?.Dispose();
     }
 
-    public override void _UnhandledInput(InputEvent @event)
+    private void ShowSettings(bool settings)
     {
-        if (@event is InputEventKey { Pressed: true })
+        _mainMenu.Visible = !settings;
+        _settingsMenu.Visible = settings;
+        if (settings)
         {
-            GetTree().ChangeSceneToFile(IntroScene);
+            SyncSettingsControls();
         }
+    }
+
+    private void PopulateSettingsControls()
+    {
+        _resolutionOption.Clear();
+        foreach (Vector2I res in GameSettings.Resolutions)
+        {
+            _resolutionOption.AddItem($"{res.X} x {res.Y}");
+        }
+        SyncSettingsControls();
+    }
+
+    private void SyncSettingsControls()
+    {
+        GameSettings settings = GameSettings.Instance;
+        int index = Array.IndexOf(GameSettings.Resolutions, settings.Resolution);
+        _resolutionOption.Selected = index >= 0 ? index : 0;
+        _fullscreenCheck.ButtonPressed = settings.Fullscreen;
+        _resolutionOption.Disabled = settings.Fullscreen;
+    }
+
+    private void OnApplyPressed()
+    {
+        GameSettings settings = GameSettings.Instance;
+        settings.Fullscreen = _fullscreenCheck.ButtonPressed;
+        int selected = _resolutionOption.Selected;
+        if (selected >= 0 && selected < GameSettings.Resolutions.Length)
+        {
+            settings.Resolution = GameSettings.Resolutions[selected];
+        }
+        settings.Apply();
+        settings.Save();
     }
 }

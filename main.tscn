@@ -2,7 +2,6 @@
 
 [ext_resource type="Texture2D" uid="uid://dd4sltn256oin" path="res://assets/title_logo.svg" id="1_0xm2m"]
 [ext_resource type="Script" uid="uid://vdmwp0kyt3ph" path="res://Main.cs" id="1_h2yge"]
-[ext_resource type="Texture2D" uid="uid://1dkqmcerm7af" path="res://assets/press_any.svg" id="2_h2yge"]
 
 [node name="Main" type="Node2D" unique_id=897250136]
 script = ExtResource("1_h2yge")
@@ -14,7 +13,93 @@ position = Vector2(1.7569885, -46.000004)
 scale = Vector2(0.6188579, 0.61885786)
 texture = ExtResource("1_0xm2m")
 
-[node name="PressAny" type="Sprite2D" parent="." unique_id=802095038]
-position = Vector2(1.1666565, 212.50002)
-scale = Vector2(0.5555556, 0.5555556)
-texture = ExtResource("2_h2yge")
+[node name="MenuLayer" type="CanvasLayer" parent="."]
+
+[node name="MainMenu" type="CenterContainer" parent="MenuLayer"]
+layout_mode = 3
+anchor_top = 0.45
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="MenuLayer/MainMenu"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="MenuLayer/MainMenu/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="MenuLayer/MainMenu/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="StartButton" type="Button" parent="MenuLayer/MainMenu/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Start"
+
+[node name="SettingsButton" type="Button" parent="MenuLayer/MainMenu/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Settings"
+
+[node name="QuitButton" type="Button" parent="MenuLayer/MainMenu/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Quit"
+
+[node name="SettingsMenu" type="CenterContainer" parent="MenuLayer"]
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="MenuLayer/SettingsMenu"]
+layout_mode = 2
+
+[node name="Margin" type="MarginContainer" parent="MenuLayer/SettingsMenu/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_bottom = 24
+
+[node name="VBox" type="VBoxContainer" parent="MenuLayer/SettingsMenu/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="Title" type="Label" parent="MenuLayer/SettingsMenu/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Settings"
+horizontal_alignment = 1
+
+[node name="ResRow" type="HBoxContainer" parent="MenuLayer/SettingsMenu/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ResLabel" type="Label" parent="MenuLayer/SettingsMenu/Panel/Margin/VBox/ResRow"]
+layout_mode = 2
+text = "Resolution"
+
+[node name="ResolutionOption" type="OptionButton" parent="MenuLayer/SettingsMenu/Panel/Margin/VBox/ResRow"]
+layout_mode = 2
+
+[node name="FullscreenCheck" type="CheckButton" parent="MenuLayer/SettingsMenu/Panel/Margin/VBox"]
+layout_mode = 2
+text = "Fullscreen"
+
+[node name="ButtonRow" type="HBoxContainer" parent="MenuLayer/SettingsMenu/Panel/Margin/VBox"]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="ApplyButton" type="Button" parent="MenuLayer/SettingsMenu/Panel/Margin/VBox/ButtonRow"]
+layout_mode = 2
+text = "Apply"
+
+[node name="BackButton" type="Button" parent="MenuLayer/SettingsMenu/Panel/Margin/VBox/ButtonRow"]
+layout_mode = 2
+text = "Back"
