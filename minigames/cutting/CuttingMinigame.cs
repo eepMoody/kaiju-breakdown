@@ -78,6 +78,8 @@ public partial class CuttingMinigame : Node2D
         _cutter.SliceImpact += OnCutterSliceImpact;
 
         _cursor = new SoftwareCursor { Texture = CursorAvailable };
+        // scale cursor to match camera zoom
+        _cursor.Scale = Vector2.One / _camera.Zoom;
         AddChild(_cursor);
     }
 
