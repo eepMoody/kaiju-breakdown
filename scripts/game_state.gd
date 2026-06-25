@@ -10,6 +10,8 @@ const FILE_PATH = "res://scripts/game_state.gd"
 @export var total_games_played : int
 @export var play_time : int
 @export var total_time : int
+@export var intro_completed : bool = false
+@export var intro_choice : String = ""
 
 static func get_level_state(level_state_key : String) -> LevelState:
 	if not has_game_state(): 
@@ -69,6 +71,18 @@ static func continue_game() -> void:
 	game_state.current_level_path = game_state.checkpoint_level_path
 	GlobalState.save()
 
+static func complete_intro(choice : String) -> void:
+	var game_state := get_or_create_state()
+	game_state.intro_completed = true
+	game_state.intro_choice = choice
+	GlobalState.save()
+
+static func is_intro_completed() -> bool:
+	if not has_game_state():
+		return false
+	var game_state := get_or_create_state()
+	return game_state.intro_completed
+
 static func reset() -> void:
 	var game_state := get_or_create_state()
 	game_state.level_states = {}
@@ -76,4 +90,6 @@ static func reset() -> void:
 	game_state.checkpoint_level_path = ""
 	game_state.play_time = 0
 	game_state.total_time = 0
+	game_state.intro_completed = false
+	game_state.intro_choice = ""
 	GlobalState.save()
