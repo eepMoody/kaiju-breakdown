@@ -3,7 +3,10 @@
 /android/
 
 # Managed addons (installed by ./setup.sh, see addons.cfg)
+# (GodotPolygonSlicePlugin is our own code and stays checked in.)
 addons/dialogic/
+addons/maaacks_game_template/
+addons/gdUnit4/
 
 # Mac OS specific ignores
 .DS_Store
